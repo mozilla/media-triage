@@ -30,6 +30,17 @@ function main(json)
   var currentYear = now.getFullYear();
 
   $("#subtitle").replaceWith("<div id=\"subtitle\" class=\"subtitle\">Incoming Bug Triage</div>");
+  switch (getTeam()) {
+    case 'playback':
+      document.getElementById('team-select').selectedIndex = 0;
+      break;
+    case 'graphics':
+      document.getElementById('team-select').selectedIndex = 2;
+      break;
+    case 'webrtc':
+      document.getElementById('team-select').selectedIndex = 1;
+      break;
+  }
   
   var triage = json.triage;
   BUGZILLA_URL = triage.BUGZILLA_URL;
@@ -57,7 +68,7 @@ function main(json)
 
       var count;
       switch (team) {
-        case 'media':
+        case 'playback':
           count = setupQueryURLs(triage.media_basequery, triage.media_old_basequery, future);
           break;
         case 'webrtc':
@@ -91,38 +102,42 @@ function parseICS(icsdata) {
 
   // Download calendar and parse into bugqueries.
   var ics = ical.parseICS(icsdata);
+
   for (let k in ics) {
     if (!ics.hasOwnProperty(k)) {
       console.log('no Own Property', k)
     }
 
     if (ics[k].type != 'VEVENT') {
+      console.log('Not a VEVENT', k)
       continue;
     }
 
-    //console.log(ev.summary, ev.location, ev.start.getDate(), MONTHS[ev.start.getMonth()], ev.start.getFullYear());
-
     var ev = ics[k];
+    // console.log(ev.summary, ev.location, ev.start.getDate(), MONTHS[ev.start.getMonth()], ev.start.getFullYear());
 
-    //var event_regex = /\[.*\] (.*)/g;
-    //var eventMatch = event_regex.exec(ev.summary);
-    //if (!eventMatch) {
-      //console.log('Incorrect summary syntax');
-      //continue; // Incorrect event syntax, ignore.
-    //}
+    // var event_regex = /\[.*\] (.*)/g;
+    // var eventMatch = event_regex.exec(ev.summary);
+    // if (!eventMatch) {
+    //   console.log('Incorrect summary syntax');
+    //   continue; // Incorrect event syntax, ignore.
+    // }
 
-    //var who = eventMatch[1];
+    if (ev.summary.indexOf(getTeam()) == -1) {
+      continue;
+    }
+
     var who = ev.summary;
     var startDate = `${ev.start.getFullYear()}-${ev.start.getMonth() + 1}-${ev.start.getDate()}`;
     var endDate = `${ev.end.getFullYear()}-${ev.end.getMonth() + 1}-${ev.end.getDate()}`;
     var year = `${ev.start.getFullYear()}`;
     var endyear = `${ev.end.getFullYear()}`;
 
+    // console.log('parseICS event:', '"' + who + '"', startDate, endDate, year, endyear);
+
     if (parseInt(year) < 2021) {
       continue;
     }
-
-    console.log('parseICS event:', who, startDate, endDate, year, endyear);
 
     if (!icsBugQueries[year])
       icsBugQueries[year] = [];
@@ -153,7 +168,6 @@ function parseICS(icsdata) {
       });
   }
 
-  console.log('icsBugQueries:', icsBugQueries);
   return icsBugQueries;
 }
 
@@ -171,7 +185,7 @@ function getYear(now)
 function getTeam() {
   var team = $.url().param('team');
   if (team == '') {
-    return 'media';
+    return 'playback';
   }
   return team;
 }
@@ -211,7 +225,7 @@ function displaySchedule(year)
 
   for (var i = 0; i < bugQueries.length; i++) {
     var query = bugQueries[i];
-    console.log(query);
+
     if (!("url" in query)) {
       console.log('no url in query!');
       continue;
@@ -220,7 +234,6 @@ function displaySchedule(year)
     var dto = query.to.split('-');
     var id = year + "-" + i;
 
-    console.log('displaySchedule', '"' + query.who + '"');
     $("#reportDiv" + id).replaceWith("<div class=\"bugcount\"><h3>"
                                   + query.who
                                   + "</h3>"
@@ -320,4 +333,21 @@ function displayCount(index, count, url)
     count = '&nbsp;';
   $("#data" + index).replaceWith("<div class=\"data\"><a href=\"" + url
                                  + "\">" + count + "</a></div>" );
+}
+
+function replaceUrlParam(url, paramName, paramValue) {
+  if (paramValue == null) {
+    paramValue = '';
+  }
+  var pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
+  if (url.search(pattern) >= 0) {
+    return url.replace(pattern, '$1' + paramValue + '$2');
+  }
+  url = url.replace(/[?#]$/, '');
+  return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
+}
+
+function teamSelectionChanged(el) {
+  var team = el.options[el.selectedIndex].value;
+  window.location.href = replaceUrlParam(window.location.href, 'team', team);
 }

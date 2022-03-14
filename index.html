@@ -18,10 +18,10 @@
   </div>
   <div>
     <div id="div-team-select">
-      <select id="team-select">
-        <option name="graphics">Graphics</option>
-        <option name="media">Media Playback</option>
-        <option name="webrtc">WebRTC</option>
+      <select id="team-select" onchange="teamSelectionChanged(this);">
+        <!-- <option value="graphics">Graphics</option> -->
+        <option value="playback">Media Playback</option>
+        <option value="webrtc">WebRTC</option>
       </select>
     </div>
     <div id="announcement" class="announcement">Please set <b>SEVERITY</b> on all bugs during triage. This avoids autobot needinfos to triage owners.</div>
