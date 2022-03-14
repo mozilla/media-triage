@@ -23,6 +23,7 @@ $(document).ready(function () {
 
 function main(json)
 {
+  console.log(json);
   var now = new Date();
   var currentYear = now.getFullYear();
 
@@ -37,23 +38,23 @@ function main(json)
     url: CALENDAR_URL,
     crossDomain:true,
     crossOrigin:true,
-    success: function(data) {
-      var icsBugQueries = parseICS(data);
-      var display = getDisplay();
-      var year = getYear(now);
+      success: function(data) {
+        var icsBugQueries = parseICS(data);
+        var display = getDisplay();
+        var year = getYear(now);
     
-      bugQueries = icsBugQueries[year];
-      var future = $.url().param('future');
-      var count = setupQueryURLs(triage.basequery, triage.old_basequery,future);
+        bugQueries = icsBugQueries[year];
+        var future = $.url().param('future');
+        var count = setupQueryURLs(triage.basequery, triage.old_basequery, future);
     
-      var displayType = (future ? "future" : (year==currentYear ? "current" : "past"));
+        var displayType = (future ? "future" : (year==currentYear ? "current" : "past"));
     
-      displayTitle(year, count, displayType);
-      displaySchedule(year);
-      displayYearFooter(currentYear, displayType, icsBugQueries);
+        displayTitle(year, count, displayType);
+        displaySchedule(year);
+        displayYearFooter(currentYear, displayType, icsBugQueries);
     
-      getBugCounts();
-    }
+        getBugCounts();
+      }
     });
 }
 
@@ -66,11 +67,11 @@ function parseICS(icsdata) {
     if (ics.hasOwnProperty(k)) {
       var ev = ics[k];
       if (ics[k].type == 'VEVENT') {
-        // console.log(`${ev.summary} is in ${ev.location} on the ${ev.start.getDate()} of ${MONTHS[ev.start.getMonth()]} at ${ev.start.getFullYear()}`);
+        console.log(`${ev.summary} is in ${ev.location} on the ${ev.start.getDate()} of ${MONTHS[ev.start.getMonth()]} at ${ev.start.getFullYear()}`);
         var event_regex = /\[.*\] (.*)/g;
         var eventMatch = event_regex.exec(ev.summary);
         if (!eventMatch) {
-          // console.log('Incorrect summary syntax');
+          console.log('Incorrect summary syntax');
           continue; // Incorrect event syntax, ignore.
         }
 
@@ -147,13 +148,9 @@ function displayTitle(year, count, displayType)
 
   var content = "";
   if (bugQueries) {
-    //if (displayType == 'future') {
     for (var i = 0; i < count; i++) {
       content += "<div class=\"bugcount\" id=\"reportDiv" + year + "-" + i + "\"></div>\n";
     }
-    //for (var i = count - 1; i >= 0; i--) {
-    //  content += "<div class=\"bugcount\" id=\"reportDiv" + year + "-" + i + "\"></div>\n";
-    //}
     $("#content").replaceWith(content);
   }
 }
