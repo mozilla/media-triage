@@ -15,9 +15,6 @@ var bugQueries;
 // Not worth chasing toLocaleDateString etc. compatibility
 var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-console.log('test');
-// privacy.file_unique_origin
-
 $(document).ready(function () {
   $.getJSON('js/triage.json', function(data) {
     main(data);
@@ -28,6 +25,11 @@ function main(json)
 {
   var now = new Date();
   var currentYear = now.getFullYear();
+
+  if (getTeam() == undefined) {
+    window.location.href = window.location.href + "?year=2022&future=1&team=playback"
+    return;
+  }
 
   $("#subtitle").replaceWith("<div id=\"subtitle\" class=\"subtitle\">Incoming Bug Triage</div>");
   switch (getTeam()) {
@@ -63,7 +65,6 @@ function main(json)
       var future = $.url().param('future');
       var team = getTeam();
 
-      console.log(bugQueries); // not here
       console.log('Querying for team', team)
 
       var count;
@@ -183,11 +184,7 @@ function getYear(now)
 }
 
 function getTeam() {
-  var team = $.url().param('team');
-  if (team == '') {
-    return 'playback';
-  }
-  return team;
+  return $.url().param('team');
 }
 
 function getDisplay()
