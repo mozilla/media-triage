@@ -140,6 +140,9 @@ function parseICS(icsdata) {
       continue;
     }
 
+    who = who.replace('webrtc triage', '');
+    who = who.replace('playback triage', '');
+
     if (!icsBugQueries[year])
       icsBugQueries[year] = [];
 
