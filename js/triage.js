@@ -15,6 +15,8 @@ var bugQueries;
 // Not worth chasing toLocaleDateString etc. compatibility
 var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+console.log('test');
+
 $(document).ready(function () {
   $.getJSON('js/triage.json', function(data) {
     main(data);
