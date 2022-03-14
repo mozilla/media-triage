@@ -70,6 +70,11 @@ body {
   border-radius: 3px;
 }
 
+.announcement a{
+  color:dodgerblue;
+  text-decoration:underline;
+}
+
 #content {
   height: 67vh;
   padding-top: 3vh;
