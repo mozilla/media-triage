@@ -59,7 +59,9 @@ body {
 
 .announcement {
   font-size: 1.5vmin;
-  margin: 10px;
+  margin: 25px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   padding: 10px;
   border: 3px solid orange;
   text-align: center;
