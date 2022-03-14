@@ -35,6 +35,11 @@ body {
   border-right: 100vw solid #002147;
 }
 
+#div-team-select {
+  padding-left:5px;
+  width:150px;
+}
+
 .header div {
   display: inline-block;
   height: 100%;
@@ -53,7 +58,7 @@ body {
 }
 
 .announcement {
-  font-size: 1.5vmin;
+  font-size: 2vmin;
   margin-top: 6vmin;
   padding: 1vmin 0;
   border: 3px solid orange;
