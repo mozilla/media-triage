@@ -5,7 +5,7 @@
     "CALENDAR_URL": "js/triage.ics",
     "refreshHours": 12,
 
-    "generic_bugzilla_search_template": "?v1=<TO>&o3=changedafter&v6=<TO>&v5=<FROM>&v3=<FROM>&<COMPONENT>&product=Core&f12=bug_type&v12=defect&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&f7=CP&emailassigned_to1=1&f3=component&o6=changedafter&keywords=meta&f5=creation_ts&o1=changedafter&v10=--&f10=bug_severity&n6=1&j9=OR&f1=component&o5=changedafter&o10=equals&query_format=advanced&j2=OR&j4=AND_G&n1=1&f6=creation_ts&f11=CP&f4=OP&f8=CP&list_id=16022634&emailtype1=exact&f2=OP&o12=equals&f9=OP&keywords_type=nowords&email1=nobody%40mozilla.org",
+    "generic_bugzilla_search_template": "?v2=<FROM>&v3=<TO>&<COMPONENT>&product=Core&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&list_id=16022721&keywords_type=nowords&o3=changedafter&f5=bug_severity&keywords=meta&o2=changedafter&emailassigned_to1=1&f6=bug_type&n3=1&email1=nobody%40mozilla.org&f3=creation_ts&o5=equals&query_format=advanced&v6=defect&f1=OP&f2=creation_ts&f4=CP&emailtype1=exact&o6=equals&v5=--",
 
     "graphics_components": "component=Canvas%3A%202D&component=GFX%3A%20Color%20Management&component=Graphics&component=Graphics%3A%20Layers&component=Graphics%3A%20Text&component=Graphics%3A%20WebRender&component=Image%20Blocking&component=ImageLib",
     "media_components": "component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio",
