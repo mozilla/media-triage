@@ -331,7 +331,7 @@ function displayCount(index, count, url)
 {
   if (count == 0)
     count = '&nbsp;';
-  $("#data" + index).replaceWith("<div class=\"data\"><a href=\"" + url
+  $("#data" + index).replaceWith("<div class=\"data\"><a target='_buglist' href=\"" + url
                                  + "\">" + count + "</a></div>" );
 }
 
