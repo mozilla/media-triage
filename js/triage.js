@@ -63,22 +63,10 @@ function main(json)
     
       bugQueries = icsBugQueries[year];
       var future = $.url().param('future');
-      var team = getTeam();
 
-      console.log('Querying for team', team)
+      console.log('Querying for team', getTeam());
 
-      var count;
-      switch (team) {
-        case 'playback':
-          count = setupQueryURLs(triage.media_basequery, triage.media_old_basequery, future);
-          break;
-        case 'webrtc':
-          count = setupQueryURLs(triage.webrtc_basequery, triage.webrtc_old_basequery, future);
-          break;
-        case 'graphics':
-          count = setupQueryURLs(triage.graphics_basequery, triage.graphics_old_basequery, future);
-          break;
-      }
+      var count = setupQueryURLs(triage, getTeam(), future);
 
       var displayType = (future ? "future" : (year == currentYear ? "current" : "past"));
     
@@ -92,11 +80,15 @@ function main(json)
 }
 
 // graphics components -
-// component=Canvas%3A 2D&component=GFX%3A%20Color%20Management&component=Graphics&component=Graphics%3A%20Layers&component=Graphics%3A%20Text&component=Graphics%3A%20WebRender&component=Image%20Blocking&component=ImageLib
+// component=Canvas%3A%202D&component=GFX%3A%20Color%20Management&component=Graphics&component=Graphics%3A%20Layers&component=Graphics%3A%20Text&component=Graphics%3A%20WebRender&component=Image%20Blocking&component=ImageLib
 // webrtc components - 
-// component=WebRTC&component=WebRTC%3A%20Audio%2FVideo&component=WebRTC%3A%20Networking&component=WebRTC%3A%20Signaling&
+// component=WebRTC&component=WebRTC%3A%20Audio%2FVideo&component=WebRTC%3A%20Networking&component=WebRTC%3A%20Signaling
 // media components - 
-// component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio&
+// component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio
+
+// New generic query -
+// ?v1=<TO>&v6=<TO>&v5=<FROM>&v3=<FROM>&<COMPONENT>&product=Core&o3=changedafter&f12=bug_type&v12=defect&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&f7=CP&emailassigned_to1=1&f3=component&o6=changedafter&keywords=meta&f5=creation_ts&o1=changedafter&v10=--&f10=bug_severity&n6=1&j9=OR&f1=component&o5=changedafter&o10=equals&query_format=advanced&j2=OR&j4=AND_G&n1=1&f6=creation_ts&f11=CP&f4=OP&f8=CP&list_id=16022634&emailtype1=exact&f2=OP&o12=equals&f9=OP&keywords_type=nowords&email1=nobody%40mozilla.org
+// https://bugzilla.mozilla.org/buglist.cgi?v1=<TO>&v6=<TO>&v5=<FROM>&v3=<FROM>&<COMPONENT>&product=Core&o3=changedafter&f12=bug_type&v12=defect&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&f7=CP&emailassigned_to1=1&f3=component&o6=changedafter&keywords=meta&f5=creation_ts&o1=changedafter&v10=--&f10=bug_severity&n6=1&j9=OR&f1=component&o5=changedafter&o10=equals&query_format=advanced&j2=OR&j4=AND_G&n1=1&f6=creation_ts&f11=CP&f4=OP&f8=CP&list_id=16022634&emailtype1=exact&f2=OP&o12=equals&f9=OP&keywords_type=nowords&email1=nobody%40mozilla.org
 
 function parseICS(icsdata) {
   var icsBugQueries = {};
@@ -266,15 +258,15 @@ function displayYearFooter(currentYear, displayType, icsBugQueries)
   $("#body").append(footer);
 }
 
-function setupQueryURLs(url, old_url, displayFuture)
+function setupQueryURLs(triage, team, displayFuture)
 {
   if (!bugQueries) {
     return 0;
   }
+
   // Do not show results for dates that are too close to today.  Only once we
   // are five days after the end of the term...
   var cutoff = new Date();
-  var oldquery_stopdate = new Date("2020-5-2");
   for (var i = 0; i < bugQueries.length; i++) {
     // If this is the schedule, display all queries for the year, otherwise filter
     // out future queries.
@@ -285,12 +277,24 @@ function setupQueryURLs(url, old_url, displayFuture)
       }
     }
 
-    var date_query_to = new Date(bugQueries[i].to);
-    if (oldquery_stopdate >= date_query_to) {
-      bugQueries[i]["url"] = old_url.replace(/<FROM>/g, bugQueries[i].from).replace(/<TO>/g, bugQueries[i].to);
-    } else {
-      bugQueries[i]["url"] = url.replace(/<FROM>/g, bugQueries[i].from).replace(/<TO>/g, bugQueries[i].to);
+    var search_params = triage.generic_bugzilla_search_template;
+    var components;
+
+    switch (team) {
+      case 'graphics':
+        components = triage.graphics_components;
+        break;
+      case 'playback':
+        components = triage.media_components;
+        break;
+      case 'webrtc':
+        components = triage.webrtc_components;
+        break;
     }
+
+    search_params = search_params.replace(/<COMPONENT>/g, components);
+    search_params = search_params.replace(/<FROM>/g, bugQueries[i].from).replace(/<TO>/g, bugQueries[i].to);
+    bugQueries[i]["url"] = search_params;
   }
   return bugQueries.length;
 }
