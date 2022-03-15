@@ -125,7 +125,7 @@ function parseICS(icsdata) {
     var year = `${ev.start.getFullYear()}`;
     var endyear = `${ev.end.getFullYear()}`;
 
-    // console.log('parseICS event:', '"' + who + '"', startDate, endDate, year, endyear);
+    console.log('parseICS event:', '"' + who + '"', startDate, endDate, year, endyear);
 
     if (parseInt(year) < 2021) {
       continue;
