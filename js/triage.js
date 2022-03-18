@@ -9,8 +9,8 @@ var SMALL_SCREEN = "smallscreen";
 
 var BUGZILLA_URL;
 var BUGZILLA_REST_URL;
-var CALENDAR_URL;
 var bugQueries;
+var CALENDAR_URL;
 
 // Not worth chasing toLocaleDateString etc. compatibility
 var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -31,30 +31,34 @@ function main(json)
     return;
   }
 
+  var triage = json.triage;
+  BUGZILLA_URL = triage.BUGZILLA_URL;
+  BUGZILLA_REST_URL = triage.BUGZILLA_REST_URL;
+
   $("#subtitle").replaceWith("<div id=\"subtitle\" class=\"subtitle\">Incoming Bug Triage</div>");
   switch (getTeam()) {
     case 'playback':
       document.getElementById('team-select').selectedIndex = 0;
+      CALENDAR_URL = triage.playback_ics;
       break;
     case 'graphics':
       document.getElementById('team-select').selectedIndex = 2;
+      CALENDAR_URL = triage.graphics_ics;
       break;
     case 'webrtc':
       document.getElementById('team-select').selectedIndex = 1;
+      CALENDAR_URL = triage.webrtc_ics;
       break;
   }
-  
-  var triage = json.triage;
-  BUGZILLA_URL = triage.BUGZILLA_URL;
-  BUGZILLA_REST_URL = triage.BUGZILLA_REST_URL;
-  CALENDAR_URL = triage.CALENDAR_URL;
+
+  console.log(CALENDAR_URL);
 
   $.ajax({
     url: CALENDAR_URL,
     crossDomain:true,
     crossOrigin: true,
     error: function (a, b, c) {
-      console.log(b);
+      console.log("ics file load error: " + c);
     },
     success: function(data) {
       var icsBugQueries = parseICS(data);
@@ -106,16 +110,11 @@ function parseICS(icsdata) {
     }
 
     var ev = ics[k];
+
     // console.log(ev.summary, ev.location, ev.start.getDate(), MONTHS[ev.start.getMonth()], ev.start.getFullYear());
 
-    // var event_regex = /\[.*\] (.*)/g;
-    // var eventMatch = event_regex.exec(ev.summary);
-    // if (!eventMatch) {
-    //   console.log('Incorrect summary syntax');
-    //   continue; // Incorrect event syntax, ignore.
-    // }
-
-    if (ev.summary.indexOf(getTeam()) == -1) {
+    // Filter based on team name.
+    if (getTeam() != 'graphics' && ev.summary.indexOf(getTeam()) == -1) {
       continue;
     }
 
@@ -133,6 +132,7 @@ function parseICS(icsdata) {
 
     who = who.replace('webrtc triage', '');
     who = who.replace('playback triage', '');
+    who = who.replace('[Incoming Triage] ', '');
 
     if (!icsBugQueries[year])
       icsBugQueries[year] = [];
@@ -260,6 +260,7 @@ function displayYearFooter(currentYear, displayType, icsBugQueries)
 function setupQueryURLs(triage, team, displayFuture)
 {
   if (!bugQueries) {
+    console.log("no bug queries found.")
     return 0;
   }
 
@@ -284,7 +285,7 @@ function setupQueryURLs(triage, team, displayFuture)
         components = triage.graphics_components;
         break;
       case 'playback':
-        components = triage.media_components;
+        components = triage.playback_components;
         break;
       case 'webrtc':
         components = triage.webrtc_components;

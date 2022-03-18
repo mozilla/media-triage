@@ -2,13 +2,16 @@
   "triage": {
     "BUGZILLA_URL": "https://bugzilla.mozilla.org/buglist.cgi",
     "BUGZILLA_REST_URL": "https://bugzilla.mozilla.org/rest/bug",
-    "CALENDAR_URL": "js/triage.ics",
     "refreshHours": 12,
 
     "generic_bugzilla_search_template": "?v2=<FROM>&v3=<TO>&<COMPONENT>&product=Core&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&list_id=16022721&keywords_type=nowords&o3=changedafter&f5=bug_severity&keywords=meta&o2=changedafter&emailassigned_to1=1&f6=bug_type&n3=1&email1=nobody%40mozilla.org&f3=creation_ts&o5=equals&query_format=advanced&v6=defect&f1=OP&f2=creation_ts&f4=CP&emailtype1=exact&o6=equals&v5=--",
 
     "graphics_components": "component=Canvas%3A%202D&component=GFX%3A%20Color%20Management&component=Graphics&component=Graphics%3A%20Layers&component=Graphics%3A%20Text&component=Graphics%3A%20WebRender&component=Image%20Blocking&component=ImageLib",
-    "media_components": "component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio",
-    "webrtc_components": "component=WebRTC&component=WebRTC%3A%20Audio%2FVideo&component=WebRTC%3A%20Networking&component=WebRTC%3A%20Signaling"
+    "playback_components": "component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio",
+    "webrtc_components": "component=WebRTC&component=WebRTC%3A%20Audio%2FVideo&component=WebRTC%3A%20Networking&component=WebRTC%3A%20Signaling",
+
+    "graphics_ics": "js/graphics.ics",
+    "playback_ics": "js/media.ics",
+    "webrtc_ics": "js/media.ics"
   }
 }
