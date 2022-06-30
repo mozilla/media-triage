@@ -118,13 +118,21 @@ function parseICS(icsdata) {
       continue;
     }
 
+    function dateToBz(date) {
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    }
+
     var who = ev.summary;
-    var startDate = `${ev.start.getFullYear()}-${ev.start.getMonth() + 1}-${ev.start.getDate()}`;
-    var endDate = `${ev.end.getFullYear()}-${ev.end.getMonth() + 1}-${ev.end.getDate()}`;
+    var startDate = dateToBz(ev.start);
+    var endDate = dateToBz(ev.end);
     var year = `${ev.start.getFullYear()}`;
     var endyear = `${ev.end.getFullYear()}`;
+    // ICS dates are inclusive
+    const notAfterDate = new Date(ev.end);
+    notAfterDate.setDate(ev.end.getDate() + 1);
+    const notAfterBz = dateToBz(notAfterDate);
 
-    console.log('parseICS event:', '"' + who + '"', startDate, endDate, year, endyear);
+    console.log('parseICS event:', '"' + who + '"', startDate, endDate, notAfterBz, year, endyear);
 
     if (parseInt(year) < 2021) {
       continue;
@@ -140,18 +148,15 @@ function parseICS(icsdata) {
     if (!icsBugQueries[endyear])
       icsBugQueries[endyear] = [];
 
-    icsBugQueries[year].push({
-      "who": who,
-      "from": startDate,
-      "to": endDate
-    });
-
+    const query = {
+      who: who,
+      from: startDate,
+      to: endDate,
+      notAfter: notAfterBz
+    };
+    icsBugQueries[year].push(query);
     if (year != endyear) {
-      icsBugQueries[endyear].push({
-        "who": who,
-        "from": startDate,
-        "to": endDate
-      });
+      icsBugQueries[endyear].push(query);
     }
   }
 
@@ -293,7 +298,7 @@ function setupQueryURLs(triage, team, displayFuture)
     }
 
     search_params = search_params.replace(/<COMPONENT>/g, components);
-    search_params = search_params.replace(/<FROM>/g, bugQueries[i].from).replace(/<TO>/g, bugQueries[i].to);
+    search_params = search_params.replace(/<AFTER>/g, bugQueries[i].from).replace(/<NOT-AFTER>/g, bugQueries[i].notAfter);
     bugQueries[i]["url"] = search_params;
   }
   return bugQueries.length;
