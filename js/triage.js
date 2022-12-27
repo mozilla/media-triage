@@ -27,7 +27,7 @@ function main(json)
   var currentYear = now.getFullYear();
 
   if (getTeam() == undefined) {
-    window.location.href = window.location.href + "?year=2022&future=1&team=playback"
+    window.location.href = window.location.href + "?year=2023&future=1&team=playback"
     return;
   }
 
@@ -113,9 +113,18 @@ function parseICS(icsdata) {
 
     // console.log(ev.summary, ev.location, ev.start.getDate(), MONTHS[ev.start.getMonth()], ev.start.getFullYear());
 
-    // Filter based on team name.
-    if (getTeam() != 'graphics' && ev.summary.indexOf(getTeam()) == -1) {
-      continue;
+    // Filter entries based on team name:
+    // teams - webrtc, playback, graphics
+    let team = getTeam()
+    let summary = ev.summary.toLowerCase()
+
+    if (team == 'webrtc' && summary.indexOf('webrtc') == -1) {
+        continue;
+    }
+    if (team == 'playback' &&
+        (summary.indexOf('playback') == -1 && summary.indexOf('media') == -1)
+       ) {
+        continue;
     }
 
     function dateToBz(date) {
@@ -134,13 +143,16 @@ function parseICS(icsdata) {
 
     console.log('parseICS event:', '"' + who + '"', startDate, endDate, notAfterBz, year, endyear);
 
-    if (parseInt(year) < 2021) {
+    if (parseInt(year) < 2022) {
       continue;
     }
 
+    // Cleanup summaries a bit
     who = who.replace('webrtc triage', '');
     who = who.replace('playback triage', '');
     who = who.replace('[Incoming Triage] ', '');
+    who = who.replace('WebRTC Triage', '');
+    who = who.replace('Media Triage', '');
 
     if (!icsBugQueries[year])
       icsBugQueries[year] = [];

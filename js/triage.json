@@ -12,6 +12,6 @@
 
     "graphics_ics": "js/graphics.ics",
     "playback_ics": "js/media.ics",
-    "webrtc_ics": "js/media.ics"
+    "webrtc_ics": "js/webrtc.ics"
   }
 }
