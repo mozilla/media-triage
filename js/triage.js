@@ -255,7 +255,7 @@ function displaySchedule(year)
 
 function displayYearFooter(currentYear, displayType, icsBugQueries)
 {
-  var footer = "<br><br><br><br><div id=\"footer\" class=\"footer-" + displayType + "\">Year &gt; ";
+  var footer = "<br><br><br><br><div id=\"footer\" class=\"footer-" + displayType + "\">";
   var nextYear = currentYear + 1;
 
   // If the ics file has dates for future years. Generally shouldn't show up unless you're
