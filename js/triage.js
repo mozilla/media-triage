@@ -267,7 +267,7 @@ function displayYearFooter(currentYear, displayType, icsBugQueries)
   // The future schedule
   footer += "<a href=\"?year=" + currentYear + "&future=1&team=" + getTeam() + "\">Schedule</a>";
 
-  for (var year = currentYear; year >= 2020; year--) {
+  for (var year = currentYear; year >= 2022; year--) {
     footer += "<a href=\"?year=" + year + "&team=" + getTeam() + "\">" + year + "</a> | ";
   }
   footer += "</div>";
