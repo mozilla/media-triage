@@ -21,8 +21,7 @@ $(document).ready(function () {
   });
 });
 
-function main(json)
-{
+function main(json) {
   var now = new Date();
   var currentYear = now.getFullYear();
 
@@ -183,8 +182,7 @@ function parseICS(icsdata) {
   return icsBugQueries;
 }
 
-function getYear(now)
-{
+function getYear(now) {
   var year = $.url().param('year');
   if (year) {
     if (parseInt(year)) {
@@ -198,8 +196,7 @@ function getTeam() {
   return $.url().param('team');
 }
 
-function getDisplay()
-{
+function getDisplay() {
   var display = $.url().param('display');
   if (display && (display === BIG_SCREEN)) {
     return BIG_SCREEN;
@@ -207,8 +204,7 @@ function getDisplay()
   return SMALL_SCREEN;
 }
 
-function displayTitle(year, count, displayType)
-{
+function displayTitle(year, count, displayType) {
   $("#title").append(" " + year);
   $("#header-bg").attr("class", "header-bg header-bg-" + displayType);
   if (displayType != "current") {
@@ -225,8 +221,7 @@ function displayTitle(year, count, displayType)
   }
 }
 
-function displaySchedule(year)
-{
+function displaySchedule(year) {
   if (!bugQueries) {
     return;
   }
@@ -253,8 +248,7 @@ function displaySchedule(year)
   }
 }
 
-function displayYearFooter(currentYear, displayType, icsBugQueries)
-{
+function displayYearFooter(currentYear, displayType, icsBugQueries) {
   var footer = "<br><br><br><br><div id=\"footer\" class=\"footer-" + displayType + "\">";
   var nextYear = currentYear + 1;
 
@@ -278,8 +272,7 @@ function displayYearFooter(currentYear, displayType, icsBugQueries)
   $("#body").append(footer);
 }
 
-function setupQueryURLs(triage, team, displayFuture)
-{
+function setupQueryURLs(triage, team, displayFuture) {
   if (!bugQueries) {
     console.log("no bug queries found.")
     return 0;
@@ -320,8 +313,7 @@ function setupQueryURLs(triage, team, displayFuture)
   return bugQueries.length;
 }
 
-function getBugCounts()
-{
+function getBugCounts() {
   if (!bugQueries) {
     return;
   }
@@ -331,8 +323,15 @@ function getBugCounts()
       console.log('no url in query!');
       continue;
     }
+
+    let url = BUGZILLA_REST_URL + bugQuery.url + '&count_only=1';
+    let key = getAPIKeyFromStorage(); 
+    if (key != null && key.length) {
+      url += "&api_key=" + key;
+    }
+
     $.ajax({
-      url: BUGZILLA_REST_URL + bugQuery.url + '&count_only=1',
+      url: url,
       bugQuery: bugQuery,
       index: i,
       crossDomain:true,
@@ -352,8 +351,7 @@ function getBugCounts()
   }
 }
 
-function displayCount(index, count, url)
-{
+function displayCount(index, count, url) {
   if (count == 0)
     count = '&nbsp;';
   $("#data" + index).replaceWith("<div class=\"data\"><a target='_buglist' href=\"" + url
@@ -375,4 +373,49 @@ function replaceUrlParam(url, paramName, paramValue) {
 function teamSelectionChanged(el) {
   var team = el.options[el.selectedIndex].value;
   window.location.href = replaceUrlParam(window.location.href, 'team', team);
+}
+
+function getFromStorage(keyname) {
+  let value = localStorage.getItem(keyname);
+  if (value == null || !value.length) {
+    console.log('session storage value for ', keyname, ' does not exist.');
+    return null;
+  }
+  return value;
+}
+
+function clearStorage(keyname) {
+  localStorage.removeItem(keyname);
+}
+
+function storeInStorage(keyname, value) {
+  localStorage.setItem(keyname, value);
+}
+
+function getAPIKeyFromStorage() {
+  return getFromStorage('apikey');
+}
+
+function getAPIKeyFromDialog() {
+  return document.getElementById('api-key').value;
+}
+
+function openSettings() {
+  let dlg = document.getElementById("prompt-query-account");
+  dlg.returnValue = "cancel";
+  let key = getAPIKeyFromStorage(); 
+  if (key != null && key.length) {
+    document.getElementById('api-key').value = key;
+  }
+  dlg.addEventListener('close', (event) => {
+    if (dlg.returnValue == 'confirm') {
+      let key = getAPIKeyFromDialog();
+      if (key != null && key.length) {
+        // save and query
+        storeInStorage('apikey', key);
+      }
+    } else {
+    }
+  }, { once: true });
+  dlg.show();
 }

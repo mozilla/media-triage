@@ -9,15 +9,19 @@
   <script src="js/libs/purl-2.3.1/purl.js"></script>
   <script src="js/libs/ical.js"></script>
   <script src="js/triage.js"></script>
+  <script src="js/utils.js"></script>
 </head>
+
 <body id="body">
   <div id="header-bg" class="header-bg"></div>
   <div class="header">
-    <img id="title-img" src="images/firefox.png" height="90%"/>
+    <img id="title-img" src="images/firefox.png" height="90%" />
     <div id="title">Media</div>
     <div id="subtitle" class="subtitle">(subtitle)</div>
   </div>
-  <div>
+
+
+  <div class="setting-buttons">
     <div id="div-team-select">
       <select id="team-select" onchange="teamSelectionChanged(this);">
         <option value="playback">Media Playback</option>
@@ -25,6 +29,13 @@
         <option value="graphics">Graphics</option>
       </select>
     </div>
+    <div class="settings-button-container">
+      <button class="command-button" onclick="openSettings()">Settings</button>
+      <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
+    </div>
+  </div>
+
+  <div>
     <div id="announcement" class="announcement">
       Please set <b>SEVERITY</b> on all bugs during triage. This avoids autobot needinfos to
       triage owners. Add bugs you're not sure what to do with to
@@ -34,5 +45,22 @@
     </div>
   </div>
   <center><div id="content"><h2>No triage information for this year</h2></div></center>
+
+  <!-- dialog: query for a bugzilla account -->
+  <dialog id="prompt-query-account" oncancel="">
+    <div class="prompt-buttons-form">
+      <form method="dialog">
+        <div class="prompt-text-input">
+          <label for="api-key">
+            API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
+          </label>
+          <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+        </div>
+        <br />
+        <button id="btn-confirm" value="confirm">Confirm</button>
+        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
+      </form>
+    </div>
+  </dialog>
 </body>
 </html>

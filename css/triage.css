@@ -5,6 +5,7 @@
 
 body {
   margin: 0px;
+  font-family: Moz;
 }
 
 .header {
@@ -12,7 +13,6 @@ body {
   height:15vh;
   text-align: center;
   font-size:  6vmin;
-  font-family: Moz;
 }
 
 .header-bg {
@@ -35,11 +35,6 @@ body {
   border-right: 100vw solid #002147;
 }
 
-#div-team-select {
-  padding-left:5px;
-  width:150px;
-}
-
 .header div {
   display: inline-block;
   height: 100%;
@@ -60,7 +55,7 @@ body {
 .announcement {
   font-size: 1.5vmin;
   margin: 25px;
-  margin-top: 10px;
+  margin-top: 50px;
   margin-bottom: 10px;
   padding: 10px;
   border: 3px solid orange;
@@ -70,7 +65,7 @@ body {
   border-radius: 3px;
 }
 
-.announcement a{
+.announcement a {
   color:dodgerblue;
   text-decoration:underline;
 }
@@ -88,7 +83,7 @@ body {
 
 .bugcount h2 {
   font-size: 3vw;
-  font-weight: inherit;
+  font-weight:normal;
   width: 12ch;
 }
 .bugcount .data {
@@ -116,7 +111,6 @@ a:hover {
   left: 0px;
   height: 4vh;
   padding-top: 2vh;
-  font-family: Moz;
   font-size: 2vmin;
   text-align: center;
 }
@@ -139,4 +133,74 @@ a:hover {
 .footer-future {
   background-color: #002147;
   color: #EAEFF2;
+}
+
+#prompt-query-account {
+  font-size: 1.5vmin;
+  color: black;
+  position: relative;
+  text-align: center;
+  font-size: 1vmin;
+  width: 30%;
+  transform: translate(0, -300px);
+}
+
+.prompt-buttons-form {
+  margin-top: 10px;
+  border: 0px solid green;
+}
+
+.prompt-buttons-form #btn-confirm, #btn-cancel {
+  padding: 12px 12px;
+  border: none;
+  background-color: #8ebf42;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 15px;
+
+}
+
+#btn-cancel {
+  background-color: #cc0000;
+}
+
+.prompt-text-input {
+  font-size: 1.7vmin;
+  display: inline-block;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+  border: 0px solid blue;
+}
+
+#api-key {
+  font-size: 1.7vmin;
+  width: 300px;
+}
+
+.alert-icon {
+  position: absolute;
+  visibility: hidden;
+  margin-left: 65px;
+  margin-top: -2px;
+}
+
+.setting-buttons {
+  border: 0px solid blue;
+  float: left;
+  width: 50%;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+#div-team-select {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.settings-button-container {
+  display: inline-block;
+  border: 0px solid red;
 }
