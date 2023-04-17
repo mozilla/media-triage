@@ -182,8 +182,8 @@ a:hover {
 .alert-icon {
   position: absolute;
   visibility: hidden;
-  margin-left: 65px;
-  margin-top: -2px;
+  margin-left: -11px;
+  margin-top: 1px;
 }
 
 .setting-buttons {

@@ -22,6 +22,8 @@ $(document).ready(function () {
 });
 
 function main(json) {
+  checkConfig();
+
   var now = new Date();
   var currentYear = now.getFullYear();
 
@@ -400,6 +402,15 @@ function getAPIKeyFromDialog() {
   return document.getElementById('api-key').value;
 }
 
+function checkConfig() {
+  let key = getAPIKeyFromStorage(); 
+  if (key == null || !key.length) {
+    document.getElementById('alert-icon').style.visibility = 'visible';
+  } else {
+    document.getElementById('alert-icon').style.visibility = 'hidden';
+  }
+}
+
 function openSettings() {
   let dlg = document.getElementById("prompt-query-account");
   dlg.returnValue = "cancel";
@@ -410,9 +421,10 @@ function openSettings() {
   dlg.addEventListener('close', (event) => {
     if (dlg.returnValue == 'confirm') {
       let key = getAPIKeyFromDialog();
-      if (key != null && key.length) {
+      if (key != null) {
         // save and query
         storeInStorage('apikey', key);
+        checkConfig();
       }
     } else {
     }
