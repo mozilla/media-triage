@@ -50,15 +50,18 @@
   <dialog id="prompt-query-account" oncancel="">
     <div class="prompt-buttons-form">
       <form method="dialog">
-        <div class="prompt-text-input">
+        <div class="prompt-api-key-div">
           <label for="api-key">
             API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
           </label>
+          <br/>
           <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
         </div>
         <br />
-        <button id="btn-confirm" value="confirm">Confirm</button>
-        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
+        <div class="nowrap">
+          <button id="btn-confirm" value="confirm">Confirm</button>
+          <button id="btn-cancel" autofocus value="cancel">Cancel</button>
+        </div>
       </form>
     </div>
   </dialog>

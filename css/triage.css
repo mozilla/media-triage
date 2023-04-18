@@ -138,15 +138,15 @@ a:hover {
 #prompt-query-account {
   font-size: 1.5vmin;
   color: black;
-  position: relative;
+  position: absolute;
   text-align: center;
   font-size: 1vmin;
   width: 30%;
   transform: translate(0, -300px);
+  background-color: #f0f0f0;
 }
 
 .prompt-buttons-form {
-  margin-top: 10px;
   border: 0px solid green;
 }
 
@@ -156,27 +156,22 @@ a:hover {
   background-color: #8ebf42;
   color: #fff;
   cursor: pointer;
-  width: 100%;
-  margin-bottom: 15px;
-
 }
 
 #btn-cancel {
   background-color: #cc0000;
 }
 
-.prompt-text-input {
-  font-size: 1.7vmin;
+.prompt-api-key-div {
+  font-size: 1.5vmin;
   display: inline-block;
-  float: left;
-  width: 100%;
-  margin-bottom: 10px;
+  width: 95%;
   border: 0px solid blue;
+  margin-bottom: 10px;
 }
 
 #api-key {
-  font-size: 1.7vmin;
-  width: 300px;
+  width: 90%;
 }
 
 .alert-icon {
@@ -203,4 +198,8 @@ a:hover {
 .settings-button-container {
   display: inline-block;
   border: 0px solid red;
+}
+
+.nowrap {
+  display: inline-block;
 }
