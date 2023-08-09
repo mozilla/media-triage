@@ -235,7 +235,7 @@ function displaySchedule(year) {
                                   + MONTHS[dfrom[1]-1] + " " + dfrom[2] + " - "
                                   + MONTHS[dto[1]-1] + " " + dto[2] + ")</h5>"
                                   + "<div id=\"data" + i + "\"" + " class=\"data greyedout\">?</div>"
-                                  + "<div id=\"ubdata" + i + "\"" + " class=\"ubdata greyedout\">?</div>"
+                                  + "<div id=\"ubdata" + i + "\"" + " class=\"data greyedout\">?</div>"
                                   + "</div>");
   }
 }
