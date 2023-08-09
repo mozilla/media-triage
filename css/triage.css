@@ -101,6 +101,12 @@ body {
   color: #D4DDE4;
 }
 
+.bugcount .sub {
+  font-size: 1vw;
+  display: inline-block;
+  color: #000000;
+}
+
 a {
   color: inherit;
   text-decoration: none;

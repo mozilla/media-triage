@@ -24,6 +24,8 @@ $(document).ready(function () {
 function main(json) {
   checkConfig();
 
+  // Load ICS file
+
   var now = new Date();
   var currentYear = now.getFullYear();
 
@@ -173,26 +175,12 @@ function parseICS(icsdata) {
   return icsBugQueries;
 }
 
-function getYear(now) {
-  var year = $.url().param('year');
-  if (year) {
-    if (parseInt(year)) {
-      return year;
-    }
-  }
-  return "" + now.getFullYear();
-}
-
-function getTeam() {
-  return $.url().param('team');
-}
-
-function getDisplay() {
-  var display = $.url().param('display');
-  if (display && (display === BIG_SCREEN)) {
-    return BIG_SCREEN;
-  }
-  return SMALL_SCREEN;
+var LastErrorText = "";
+function errorMsg(text) {
+  if (LastErrorText == text)
+    return;
+  $("#errors").append(text);
+  LastErrorText = text;
 }
 
 function displayTitle(year, count, displayType) {
@@ -299,10 +287,12 @@ function setupQueryURLs(triage, team, displayFuture) {
         break;
     }
 
+    // Bugzilla searches
     search_params = search_params.replace(/<COMPONENT>/g, components);
     search_params = search_params.replace(/<AFTER>/g, bugQueries[i].from).replace(/<NOT-AFTER>/g, bugQueries[i].notAfter);
     bugQueries[i]["url"] = search_params;
 
+    // Bugzilla updatebot searches
     ubsearch = ubsearch.replace(/<COMPONENT>/g, components);
     ubsearch = ubsearch.replace(/<AFTER>/g, bugQueries[i].from).replace(/<NOT-AFTER>/g, bugQueries[i].notAfter);
     bugQueries[i]["uburl"] = ubsearch;
@@ -310,7 +300,7 @@ function setupQueryURLs(triage, team, displayFuture) {
   return bugQueries.length;
 }
 
-
+// callback from ics query load
 function getBugCounts() {
   if (!bugQueries) {
     return;
@@ -347,7 +337,18 @@ function getBugCounts() {
         }
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        console.log(textStatus);
+        console.log("url:", url);
+        console.log("status:", textStatus);
+        console.log("error thrown:", errorThrown);
+        console.log("response text:", jqXHR.responseText);
+        try {
+          let info = JSON.parse(jqXHR.responseText);
+          let text = info.message ? info.message : errorThrown;
+          console.log("detail:", text);
+          errorMsg(text);
+          return;
+        } catch(e) {
+        }
       }
     });
   }
@@ -366,7 +367,7 @@ function getBugCounts() {
       url += "&api_key=" + key;
     }
 
-    console.log(url);
+    //console.log(url);
 
     $.ajax({
       url: url,
@@ -402,11 +403,14 @@ function getBugCounts() {
 }
 
 function displayCount(query, index, count, searchUrl) {
-  if (count == 0)
-    count = '&nbsp;';
+  if (count == 0) {
+    $("#data" + index).replaceWith("<div class=\"data\"><a target='_buglist' href=\"" + searchUrl
+                                     + "\"></a><div class='updata sub'></div></div>" );
+    return;
+  }
 
   $("#data" + index).replaceWith("<div class=\"data\"><a target='_buglist' href=\"" + searchUrl
-                                 + "\">" + count + "</a></div>" );
+                                   + "\">" + count + "</a><div class='updata sub'>B</div></div>" );
 }
 
 // updatebot
@@ -424,8 +428,8 @@ function processListFor(url, data, index, count, searchUrl) {
       console.log('error parsing bug:', bug);
       return;
     }
-    $("#ubdata" + index).replaceWith("<div class=\"ubdata\"><a target='_buglist' href=\"" + searchUrl
-                                   + "\">" + count + "</a></div>" );
+    $("#ubdata" + index).replaceWith("<div class='ubdata''><a target='_buglist' href=\"" + searchUrl
+                                   + "\">" + count + "</a><div class='updata sub'>UB</div></div>" );
   });
 }
 

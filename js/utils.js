@@ -4,6 +4,28 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+function getYear(now) {
+  var year = $.url().param('year');
+  if (year) {
+    if (parseInt(year)) {
+      return year;
+    }
+  }
+  return "" + now.getFullYear();
+}
+
+function getTeam() {
+  return $.url().param('team');
+}
+
+function getDisplay() {
+  var display = $.url().param('display');
+  if (display && (display === BIG_SCREEN)) {
+    return BIG_SCREEN;
+  }
+  return SMALL_SCREEN;
+}
+
  function replaceUrlParam(url, paramName, paramValue) {
   if (paramValue == null) {
     paramValue = '';
