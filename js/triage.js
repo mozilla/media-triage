@@ -421,6 +421,9 @@ function processListFor(url, data, index, count, searchUrl) {
     return;
   }
 
+  $("#ubdata" + index).replaceWith("<div class='ubdata''><a target='_buglist' href=\"" + searchUrl
+                                  + "\">" + count + "</a><div class='updata sub'>UB</div></div>" );
+  /*
   data.bugs.forEach(function (bug) {
     // Returns a js object containing all the bug's info we display.
     let res = parseBugSummary(bug.id, bug.summary, bug.assigned_to, bug.creation_time, bug.resolution);
@@ -428,8 +431,7 @@ function processListFor(url, data, index, count, searchUrl) {
       console.log('error parsing bug:', bug);
       return;
     }
-    $("#ubdata" + index).replaceWith("<div class='ubdata''><a target='_buglist' href=\"" + searchUrl
-                                   + "\">" + count + "</a><div class='updata sub'>UB</div></div>" );
   });
+  */
 }
 
