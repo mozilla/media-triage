@@ -8,8 +8,8 @@
   <script src="js/libs/jquery-cross-origin.min.js"></script>
   <script src="js/libs/purl-2.3.1/purl.js"></script>
   <script src="js/libs/ical.js"></script>
-  <script src="js/triage.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/triage.js"></script>
 </head>
 
 <body id="body">
@@ -41,10 +41,14 @@
       triage owners. Add bugs you're not sure what to do with to
       <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=webrtc-triage" target="_new">webrtc-triage</a>
       or <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=media-triage" target="_new">media-triage</a> for
-      team triage. See the <a href="https://firefox-source-docs.mozilla.org/bug-mgmt/policies/triage-bugzilla.html" target="_new">Mozilla Triage for Bugzilla</a> documentation for details on the triage process.
+      team triage. See the <a href="https://firefox-source-docs.mozilla.org/bug-mgmt/policies/triage-bugzilla.html" target="_new">Mozilla Triage for
+      Bugzilla</a> documentation for details on the triage process.
     </div>
   </div>
   <center><div id="content"><h2>No triage information for this year</h2></div></center>
+  <br />
+  <div class="errors-container" id="errors">
+  </div>
 
   <!-- dialog: query for a bugzilla account -->
   <dialog id="prompt-query-account" oncancel="">
@@ -54,7 +58,7 @@
           <label for="api-key">
             API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
           </label>
-          <br/>
+          <br />
           <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
         </div>
         <br />

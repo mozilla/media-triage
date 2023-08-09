@@ -91,6 +91,12 @@ body {
   display: inline-block;
 }
 
+.bugcount .ubdata {
+  font-size: 3vw;
+  display: inline-block;
+  color: #FF9500;
+}
+
 .greyedout {
   color: #D4DDE4;
 }

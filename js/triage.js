@@ -52,8 +52,6 @@ function main(json) {
       break;
   }
 
-  console.log(CALENDAR_URL);
-
   $.ajax({
     url: CALENDAR_URL,
     crossDomain:true,
@@ -71,6 +69,7 @@ function main(json) {
 
       console.log('Querying for team', getTeam());
 
+      // Create bugzilla urls for specific users and dates
       var count = setupQueryURLs(triage, getTeam(), future);
 
       var displayType = (future ? "future" : (year == currentYear ? "current" : "past"));
@@ -83,16 +82,6 @@ function main(json) {
     }
   });
 }
-
-// graphics components -
-// component=Canvas%3A%202D&component=GFX%3A%20Color%20Management&component=Graphics&component=Graphics%3A%20Layers&component=Graphics%3A%20Text&component=Graphics%3A%20WebRender&component=Image%20Blocking&component=ImageLib
-// webrtc components - 
-// component=WebRTC&component=WebRTC%3A%20Audio%2FVideo&component=WebRTC%3A%20Networking&component=WebRTC%3A%20Signaling
-// media components - 
-// component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio
-
-// New generic query -
-// ?v2=<FROM>&v3=<TO>&component=WebRTC&<COMPONENT>&product=Core&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&list_id=16022721&keywords_type=nowords&o3=changedafter&f5=bug_severity&keywords=meta&o2=changedafter&emailassigned_to1=1&f6=bug_type&n3=1&email1=nobody%40mozilla.org&f3=creation_ts&o5=equals&query_format=advanced&v6=defect&f1=OP&f2=creation_ts&f4=CP&emailtype1=exact&o6=equals&v5=--
 
 function parseICS(icsdata) {
   var icsBugQueries = {};
@@ -142,7 +131,7 @@ function parseICS(icsdata) {
     notAfterDate.setDate(ev.end.getDate() + 1);
     const notAfterBz = dateToBz(notAfterDate);
 
-    console.log('parseICS event:', '"' + who + '"', startDate, endDate, notAfterBz, year, endyear);
+    //console.log('parseICS event:', '"' + who + '"', startDate, endDate, notAfterBz, year, endyear);
 
     if (parseInt(year) < 2022) {
       continue;
@@ -245,8 +234,9 @@ function displaySchedule(year) {
                                   + "<h5>("
                                   + MONTHS[dfrom[1]-1] + " " + dfrom[2] + " - "
                                   + MONTHS[dto[1]-1] + " " + dto[2] + ")</h5>"
-                                  + "<div id=\"data" + i + "\""
-                                  + " class=\"data greyedout\">?</div></div>");
+                                  + "<div id=\"data" + i + "\"" + " class=\"data greyedout\">?</div>"
+                                  + "<div id=\"ubdata" + i + "\"" + " class=\"ubdata greyedout\">?</div>"
+                                  + "</div>");
   }
 }
 
@@ -293,8 +283,9 @@ function setupQueryURLs(triage, team, displayFuture) {
       }
     }
 
-    var search_params = triage.generic_bugzilla_search_template;
-    var components;
+    let search_params = triage.generic_bugzilla_search_template;
+    let ubsearch = triage.updatebot_bugzilla_search_template;
+    let components;
 
     switch (team) {
       case 'graphics':
@@ -311,16 +302,25 @@ function setupQueryURLs(triage, team, displayFuture) {
     search_params = search_params.replace(/<COMPONENT>/g, components);
     search_params = search_params.replace(/<AFTER>/g, bugQueries[i].from).replace(/<NOT-AFTER>/g, bugQueries[i].notAfter);
     bugQueries[i]["url"] = search_params;
+
+    ubsearch = ubsearch.replace(/<COMPONENT>/g, components);
+    ubsearch = ubsearch.replace(/<AFTER>/g, bugQueries[i].from).replace(/<NOT-AFTER>/g, bugQueries[i].notAfter);
+    bugQueries[i]["uburl"] = ubsearch;
   }
   return bugQueries.length;
 }
+
 
 function getBugCounts() {
   if (!bugQueries) {
     return;
   }
+
+  $("#errors").empty();
+
+  // Fire off bugzilla bug lists
   for (var i = bugQueries.length-1; i >= 0; i--) {
-    var bugQuery = bugQueries[i];
+  let bugQuery = bugQueries[i];
     if (!("url" in bugQuery)) {
       console.log('no url in query!');
       continue;
@@ -342,7 +342,7 @@ function getBugCounts() {
       success: function(data, status) {
         if (status === 'success') {
           this.bugQuery.count = data.bug_count;
-          displayCount(this.index, this.bugQuery.count,
+          displayCount(bugQuery, this.index, this.bugQuery.count,
                        BUGZILLA_URL + this.bugQuery.url);
         }
       },
@@ -351,83 +351,81 @@ function getBugCounts() {
       }
     });
   }
+
+  // Fire off update bot queries
+  for (var i = bugQueries.length-1; i >= 0; i--) {
+    let bugQuery = bugQueries[i];
+
+    if (!("uburl" in bugQuery)) {
+      continue;
+    }
+
+    let url = BUGZILLA_REST_URL + bugQuery.uburl; // + '&count_only=1';
+    let key = getAPIKeyFromStorage(); 
+    if (key != null && key.length) {
+      url += "&api_key=" + key;
+    }
+
+    console.log(url);
+
+    $.ajax({
+      url: url,
+      bugQuery: bugQuery,
+      index: i,
+      crossDomain:true,
+      dataType: 'json',
+      ifModified: true,
+      success: function(data, status) {
+        if (status === 'success') {
+          this.bugQuery.count = data.bugs.length;
+          // data population
+          processListFor(url, data, this.index, this.bugQuery.count,
+                         BUGZILLA_URL + this.bugQuery.uburl);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log("status:", textStatus);
+        console.log("error thrown:", errorThrown);
+        console.log("response text:", jqXHR.responseText);
+        try {
+          let info = JSON.parse(jqXHR.responseText);
+          let text = info.message ? info.message : errorThrown;
+          errorMsg(text);
+          return;
+        } catch(e) {
+        }
+        errorMsg(errorThrown);
+      }
+    });
+  }
+
 }
 
-function displayCount(index, count, url) {
+function displayCount(query, index, count, searchUrl) {
   if (count == 0)
     count = '&nbsp;';
-  $("#data" + index).replaceWith("<div class=\"data\"><a target='_buglist' href=\"" + url
+
+  $("#data" + index).replaceWith("<div class=\"data\"><a target='_buglist' href=\"" + searchUrl
                                  + "\">" + count + "</a></div>" );
 }
 
-function replaceUrlParam(url, paramName, paramValue) {
-  if (paramValue == null) {
-    paramValue = '';
+// updatebot
+function processListFor(url, data, index, count, searchUrl) {
+  
+  if (count == 0) {
+    $("#ubdata" + index).replaceWith("" );
+    return;
   }
-  var pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
-  if (url.search(pattern) >= 0) {
-    return url.replace(pattern, '$1' + paramValue + '$2');
-  }
-  url = url.replace(/[?#]$/, '');
-  return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
-}
 
-function teamSelectionChanged(el) {
-  var team = el.options[el.selectedIndex].value;
-  window.location.href = replaceUrlParam(window.location.href, 'team', team);
-}
-
-function getFromStorage(keyname) {
-  let value = localStorage.getItem(keyname);
-  if (value == null || !value.length) {
-    console.log('session storage value for ', keyname, ' does not exist.');
-    return null;
-  }
-  return value;
-}
-
-function clearStorage(keyname) {
-  localStorage.removeItem(keyname);
-}
-
-function storeInStorage(keyname, value) {
-  localStorage.setItem(keyname, value);
-}
-
-function getAPIKeyFromStorage() {
-  return getFromStorage('apikey');
-}
-
-function getAPIKeyFromDialog() {
-  return document.getElementById('api-key').value;
-}
-
-function checkConfig() {
-  let key = getAPIKeyFromStorage(); 
-  if (key == null || !key.length) {
-    document.getElementById('alert-icon').style.visibility = 'visible';
-  } else {
-    document.getElementById('alert-icon').style.visibility = 'hidden';
-  }
-}
-
-function openSettings() {
-  let dlg = document.getElementById("prompt-query-account");
-  dlg.returnValue = "cancel";
-  let key = getAPIKeyFromStorage(); 
-  if (key != null && key.length) {
-    document.getElementById('api-key').value = key;
-  }
-  dlg.addEventListener('close', (event) => {
-    if (dlg.returnValue == 'confirm') {
-      let key = getAPIKeyFromDialog();
-      if (key != null) {
-        // save and query
-        storeInStorage('apikey', key);
-        checkConfig();
-      }
-    } else {
+  data.bugs.forEach(function (bug) {
+    // Returns a js object containing all the bug's info we display.
+    let res = parseBugSummary(bug.id, bug.summary, bug.assigned_to, bug.creation_time, bug.resolution);
+    if (res == null) {
+      console.log('error parsing bug:', bug);
+      return;
     }
-  }, { once: true });
-  dlg.show();
+    $("#ubdata" + index).replaceWith("<div class=\"ubdata\"><a target='_buglist' href=\"" + searchUrl
+                                   + "\">" + count + "</a></div>" );
+  });
 }
+
