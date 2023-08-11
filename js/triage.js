@@ -30,7 +30,7 @@ function main(json) {
   var currentYear = now.getFullYear();
 
   if (getTeam() == undefined) {
-    window.location.href = window.location.href + "?year=2023&future=1&team=playback"
+    window.location.href = window.location.href + "?year=2023&team=playback"
     return;
   }
 
@@ -103,7 +103,7 @@ function parseICS(icsdata) {
 
     var ev = ics[k];
 
-    // console.log(ev.summary, ev.location, ev.start.getDate(), MONTHS[ev.start.getMonth()], ev.start.getFullYear());
+    //console.log(ev.summary, ev.location, ev.start.getDate(), MONTHS[ev.start.getMonth()], ev.start.getFullYear());
 
     // Filter entries based on team name:
     // teams - webrtc, playback, graphics
@@ -133,8 +133,6 @@ function parseICS(icsdata) {
     notAfterDate.setDate(ev.end.getDate() + 1);
     const notAfterBz = dateToBz(notAfterDate);
 
-    //console.log('parseICS event:', '"' + who + '"', startDate, endDate, notAfterBz, year, endyear);
-
     if (parseInt(year) < 2022) {
       continue;
     }
@@ -145,6 +143,8 @@ function parseICS(icsdata) {
     who = who.replace('[Incoming Triage] ', '');
     who = who.replace('WebRTC Triage', '');
     who = who.replace('Media Triage', '');
+
+    console.log('parseICS event:', '"' + who + '"', startDate, endDate, notAfterBz, year, endyear);
 
     if (!icsBugQueries[year])
       icsBugQueries[year] = [];
@@ -209,7 +209,6 @@ function displaySchedule(year) {
     var query = bugQueries[i];
 
     if (!("url" in query)) {
-      console.log('no url in query!');
       continue;
     }
     var dfrom = query.from.split('-');
@@ -359,6 +358,7 @@ function getBugCounts() {
 
     if (!("uburl" in bugQuery)) {
       continue;
+      console.log(bugQuery);
     }
 
     let url = BUGZILLA_REST_URL + bugQuery.uburl; // + '&count_only=1';
