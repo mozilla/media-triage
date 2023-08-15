@@ -207,6 +207,24 @@ function setupQueryURLs(triage, team, displayFuture) {
   return bugQueries.length;
 }
 
+var TotalQueries = 0;
+function initProgress() {
+  document.getElementById('progressmeter').max = TotalQueries;
+  document.getElementById('progressmeter').value = 0;
+  document.getElementById('progress').style.visibility = 'visible';
+  console.log('TotalQueries', TotalQueries);
+}
+
+function stepdown() {
+  document.getElementById('progressmeter').value += 1;
+  closeProgress();
+}
+
+function closeProgress() {
+  if (document.getElementById('progressmeter').value >= TotalQueries)
+    document.getElementById('progress').style.visibility = 'hidden';
+}
+
 // callback from ics query load
 function getBugCounts() {
   if (!bugQueries) {
@@ -215,11 +233,15 @@ function getBugCounts() {
 
   $("#errors").empty();
 
+  TotalQueries = bugQueries.length * 2;
+  initProgress();
+
   // Fire off bugzilla bug lists
-  for (var i = bugQueries.length-1; i >= 0; i--) {
-  let bugQuery = bugQueries[i];
+  for (var idx = 0; idx < bugQueries.length; idx++) {
+    let bugQuery = bugQueries[idx];
     if (!("url" in bugQuery)) {
       console.log('no url in query!');
+      stepdown();
       continue;
     }
 
@@ -232,7 +254,7 @@ function getBugCounts() {
     $.ajax({
       url: url,
       bugQuery: bugQuery,
-      index: i,
+      index: idx,
       crossDomain:true,
       dataType: 'json',
       ifModified: true,
@@ -242,6 +264,7 @@ function getBugCounts() {
           displayCount(bugQuery, this.index, this.bugQuery.count,
                        BUGZILLA_URL + this.bugQuery.url);
         }
+        stepdown();
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log("url:", url);
@@ -261,11 +284,12 @@ function getBugCounts() {
   }
 
   // Fire off update bot queries
-  for (var i = bugQueries.length-1; i >= 0; i--) {
-    let bugQuery = bugQueries[i];
+  for (var idx = 0; idx < bugQueries.length; idx++) {
+    let bugQuery = bugQueries[idx];
 
     if (!("uburl" in bugQuery)) {
       console.log(bugQuery);
+      stepdown();
       continue;
     }
 
@@ -280,7 +304,7 @@ function getBugCounts() {
     $.ajax({
       url: url,
       bugQuery: bugQuery,
-      index: i,
+      index: idx,
       crossDomain:true,
       dataType: 'json',
       ifModified: true,
@@ -290,6 +314,7 @@ function getBugCounts() {
           // data population
           processListFor(url, data, this.index, this.bugQuery.count,
                          BUGZILLA_URL + this.bugQuery.uburl);
+          stepdown();
         }
       },
       error: function(jqXHR, textStatus, errorThrown) {
@@ -307,7 +332,6 @@ function getBugCounts() {
       }
     });
   }
-
 }
 
 function displayCount(query, index, count, searchUrl) {

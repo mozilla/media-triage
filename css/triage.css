@@ -215,3 +215,15 @@ a:hover {
 .nowrap {
   display: inline-block;
 }
+
+#progress {
+  visibility: hidden;
+  width: 100%;
+  text-align: center;
+  border: 0px solid blue;
+}
+
+#progressmeter {
+  width: 40%%;
+  height: 15px;
+}
