@@ -275,7 +275,7 @@ function getBugCounts() {
       url += "&api_key=" + key;
     }
 
-    console.log('updatebot search:', url);
+    //console.log('updatebot search:', BUGZILLA_URL + bugQuery.uburl);
 
     $.ajax({
       url: url,
