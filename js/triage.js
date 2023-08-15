@@ -73,106 +73,14 @@ function main(json) {
 
       // Create bugzilla urls for specific users and dates
       var count = setupQueryURLs(triage, getTeam(), future);
-
       var displayType = (future ? "future" : (year == currentYear ? "current" : "past"));
     
       displayTitle(year, count, displayType);
       displaySchedule(year);
       displayYearFooter(currentYear, displayType, icsBugQueries);
-    
       getBugCounts();
     }
   });
-}
-
-function parseICS(icsdata) {
-  var icsBugQueries = {};
-
-  // Download calendar and parse into bugqueries.
-  var ics = ical.parseICS(icsdata);
-
-  for (let k in ics) {
-    if (!ics.hasOwnProperty(k)) {
-      console.log('no Own Property', k)
-    }
-
-    if (ics[k].type != 'VEVENT') {
-      console.log('Not a VEVENT', k)
-      continue;
-    }
-
-    var ev = ics[k];
-
-    //console.log(ev.summary, ev.location, ev.start.getDate(), MONTHS[ev.start.getMonth()], ev.start.getFullYear());
-
-    // Filter entries based on team name:
-    // teams - webrtc, playback, graphics
-    let team = getTeam()
-    let summary = ev.summary.toLowerCase()
-
-    if (team == 'webrtc' && summary.indexOf('webrtc') == -1) {
-        continue;
-    }
-    if (team == 'playback' &&
-        (summary.indexOf('playback') == -1 && summary.indexOf('media') == -1)
-       ) {
-        continue;
-    }
-
-    function dateToBz(date) {
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    }
-
-    var who = ev.summary;
-    var startDate = dateToBz(ev.start);
-    var endDate = dateToBz(ev.end);
-    var year = `${ev.start.getFullYear()}`;
-    var endyear = `${ev.end.getFullYear()}`;
-    // ICS dates are inclusive
-    const notAfterDate = new Date(ev.end);
-    notAfterDate.setDate(ev.end.getDate() + 1);
-    const notAfterBz = dateToBz(notAfterDate);
-
-    if (parseInt(year) < 2022) {
-      continue;
-    }
-
-    // Cleanup summaries a bit
-    who = who.replace('webrtc triage', '');
-    who = who.replace('playback triage', '');
-    who = who.replace('[Incoming Triage] ', '');
-    who = who.replace('WebRTC Triage', '');
-    who = who.replace('Media Triage', '');
-
-    console.log('parseICS event:', '"' + who + '"', startDate, endDate, notAfterBz, year, endyear);
-
-    if (!icsBugQueries[year])
-      icsBugQueries[year] = [];
-
-    if (!icsBugQueries[endyear])
-      icsBugQueries[endyear] = [];
-
-    const query = {
-      who: who,
-      from: startDate,
-      to: endDate,
-      notAfter: notAfterBz
-    };
-    icsBugQueries[year].push(query);
-    if (year != endyear) {
-      icsBugQueries[endyear].push(query);
-    }
-  }
-
-  // Sort
-  for (yearKey in icsBugQueries) {
-    icsBugQueries[yearKey].sort(
-      function(a, b){
-         return new Date(a.from) > new Date(b.from);
-      });
-  }
-
-  return icsBugQueries;
 }
 
 var LastErrorText = "";
@@ -357,8 +265,8 @@ function getBugCounts() {
     let bugQuery = bugQueries[i];
 
     if (!("uburl" in bugQuery)) {
-      continue;
       console.log(bugQuery);
+      continue;
     }
 
     let url = BUGZILLA_REST_URL + bugQuery.uburl; // + '&count_only=1';
@@ -367,7 +275,7 @@ function getBugCounts() {
       url += "&api_key=" + key;
     }
 
-    //console.log(url);
+    console.log('updatebot search:', url);
 
     $.ajax({
       url: url,
