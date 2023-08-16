@@ -240,7 +240,7 @@ function getBugCounts() {
   for (var idx = 0; idx < bugQueries.length; idx++) {
     let bugQuery = bugQueries[idx];
     if (!("url" in bugQuery)) {
-      console.log('no url in query!');
+      //console.log('no url in query!');
       stepdown();
       continue;
     }
@@ -288,12 +288,12 @@ function getBugCounts() {
     let bugQuery = bugQueries[idx];
 
     if (!("uburl" in bugQuery)) {
-      console.log(bugQuery);
+      //console.log('No uburl entry?', bugQuery);
       stepdown();
       continue;
     }
 
-    let url = BUGZILLA_REST_URL + bugQuery.uburl; // + '&count_only=1';
+    let url = BUGZILLA_REST_URL + bugQuery.uburl + '&count_only=1';
     let key = getAPIKeyFromStorage(); 
     if (key != null && key.length) {
       url += "&api_key=" + key;
@@ -304,13 +304,13 @@ function getBugCounts() {
     $.ajax({
       url: url,
       bugQuery: bugQuery,
-      index: idx,
       crossDomain:true,
+      index: idx,
       dataType: 'json',
       ifModified: true,
       success: function(data, status) {
         if (status === 'success') {
-          this.bugQuery.count = data.bugs.length;
+          this.bugQuery.count = data.bug_count;
           // data population
           processListFor(url, data, this.index, this.bugQuery.count,
                          BUGZILLA_URL + this.bugQuery.uburl);
@@ -355,15 +355,5 @@ function processListFor(url, data, index, count, searchUrl) {
 
   $("#ubdata" + index).replaceWith("<div class='ubdata''><a target='_buglist' href=\"" + searchUrl
                                   + "\">" + count + "</a><div class='updata sub'>UB</div></div>" );
-  /*
-  data.bugs.forEach(function (bug) {
-    // Returns a js object containing all the bug's info we display.
-    let res = parseBugSummary(bug.id, bug.summary, bug.assigned_to, bug.creation_time, bug.resolution);
-    if (res == null) {
-      console.log('error parsing bug:', bug);
-      return;
-    }
-  });
-  */
 }
 
