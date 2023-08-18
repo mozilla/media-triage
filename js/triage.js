@@ -9,8 +9,9 @@ var SMALL_SCREEN = "smallscreen";
 
 var BUGZILLA_URL;
 var BUGZILLA_REST_URL;
-var bugQueries;
-var CALENDAR_URL;
+var BugQueries;
+var TriageConfig;
+var TotalQueries = 0;
 
 // Not worth chasing toLocaleDateString etc. compatibility
 var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -34,27 +35,28 @@ function main(json) {
     return;
   }
 
-  var triage = json.triage;
-  BUGZILLA_URL = triage.BUGZILLA_URL;
-  BUGZILLA_REST_URL = triage.BUGZILLA_REST_URL;
+  TriageConfig = json.triage;
+  BUGZILLA_URL = TriageConfig.BUGZILLA_URL;
+  BUGZILLA_REST_URL = TriageConfig.BUGZILLA_REST_URL;
 
+  let icsurl = '';
   switch (getTeam()) {
     case 'playback':
       document.getElementById('team-select').selectedIndex = 0;
-      CALENDAR_URL = triage.playback_ics;
+      icsurl = TriageConfig.playback_ics;
       break;
     case 'graphics':
       document.getElementById('team-select').selectedIndex = 2;
-      CALENDAR_URL = triage.graphics_ics;
+      icsurl = TriageConfig.graphics_ics;
       break;
     case 'webrtc':
       document.getElementById('team-select').selectedIndex = 1;
-      CALENDAR_URL = triage.webrtc_ics;
+      icsurl = TriageConfig.webrtc_ics;
       break;
   }
 
   $.ajax({
-    url: CALENDAR_URL,
+    url: icsurl,
     crossDomain:true,
     crossOrigin: true,
     error: function (a, b, c) {
@@ -65,13 +67,13 @@ function main(json) {
       var display = getDisplay();
       var year = getYear(now);
     
-      bugQueries = icsBugQueries[year];
+      BugQueries = icsBugQueries[year];
       var future = $.url().param('future');
 
       console.log('Querying for team', getTeam());
 
       // Create bugzilla urls for specific users and dates
-      var count = setupQueryURLs(triage, getTeam(), future);
+      var count = setupQueryURLs(future);
       var displayType = (future ? "future" : (year == currentYear ? "current" : "past"));
     
       displayTitle(year, count, displayType);
@@ -113,7 +115,7 @@ function displayTitle(year, count, displayType) {
   }
 
   var content = "";
-  if (bugQueries) {
+  if (BugQueries) {
     for (var i = 0; i < count; i++) {
       content += "<div class=\"bugcount\" id=\"reportDiv" + year + "-" + i + "\"></div>\n";
     }
@@ -122,12 +124,12 @@ function displayTitle(year, count, displayType) {
 }
 
 function displaySchedule(year) {
-  if (!bugQueries) {
+  if (!BugQueries) {
     return;
   }
 
-  for (var i = 0; i < bugQueries.length; i++) {
-    var query = bugQueries[i];
+  for (var i = 0; i < BugQueries.length; i++) {
+    var query = BugQueries[i];
 
     if (!("url" in query)) {
       continue;
@@ -172,8 +174,8 @@ function displayYearFooter(currentYear, displayType, icsBugQueries) {
   $("#body").append(footer);
 }
 
-function setupQueryURLs(triage, team, displayFuture) {
-  if (!bugQueries) {
+function setupQueryURLs(displayFuture) {
+  if (!BugQueries) {
     console.log("no bug queries found.")
     return 0;
   }
@@ -181,46 +183,45 @@ function setupQueryURLs(triage, team, displayFuture) {
   // Do not show results for dates that are too close to today.  Only once we
   // are five days after the end of the term...
   var cutoff = new Date();
-  for (var i = 0; i < bugQueries.length; i++) {
+  for (var i = 0; i < BugQueries.length; i++) {
     // If this is the schedule, display all queries for the year, otherwise filter
     // out future queries.
     if (!displayFuture) {
-      var dto = new Date(bugQueries[i].from);
+      var dto = new Date(BugQueries[i].from);
       if (cutoff < dto) {
         return i;
       }
     }
 
-    let search_params = triage.generic_bugzilla_search_template;
-    let ubsearch = triage.updatebot_bugzilla_search_template;
+    let search_params = TriageConfig.generic_bugzilla_search_template;
+    let ubsearch = TriageConfig.updatebot_bugzilla_search_template;
     let components;
 
-    switch (team) {
+    switch (getTeam()) {
       case 'graphics':
-        components = triage.graphics_components;
+        components = TriageConfig.graphics_components;
         break;
       case 'playback':
-        components = triage.playback_components;
+        components = TriageConfig.playback_components;
         break;
       case 'webrtc':
-        components = triage.webrtc_components;
+        components = TriageConfig.webrtc_components;
         break;
     }
 
     // Bugzilla searches
     search_params = search_params.replace(/<COMPONENT>/g, components);
-    search_params = search_params.replace(/<AFTER>/g, bugQueries[i].from).replace(/<NOT-AFTER>/g, bugQueries[i].notAfter);
-    bugQueries[i]["url"] = search_params;
+    search_params = search_params.replace(/<AFTER>/g, BugQueries[i].from).replace(/<NOT-AFTER>/g, BugQueries[i].notAfter);
+    BugQueries[i]["url"] = search_params;
 
     // Bugzilla updatebot searches
     ubsearch = ubsearch.replace(/<COMPONENT>/g, components);
-    ubsearch = ubsearch.replace(/<AFTER>/g, bugQueries[i].from).replace(/<NOT-AFTER>/g, bugQueries[i].notAfter);
-    bugQueries[i]["uburl"] = ubsearch;
+    ubsearch = ubsearch.replace(/<AFTER>/g, BugQueries[i].from).replace(/<NOT-AFTER>/g, BugQueries[i].notAfter);
+    BugQueries[i]["uburl"] = ubsearch;
   }
-  return bugQueries.length;
+  return BugQueries.length;
 }
 
-var TotalQueries = 0;
 function initProgress() {
   document.getElementById('progressmeter').max = TotalQueries;
   document.getElementById('progressmeter').value = 0;
@@ -240,18 +241,18 @@ function closeProgress() {
 
 // callback from ics query load
 function getBugCounts() {
-  if (!bugQueries) {
+  if (!BugQueries) {
     return;
   }
 
   $("#errors").empty();
 
-  TotalQueries = bugQueries.length * 2;
+  TotalQueries = BugQueries.length * 2;
   initProgress();
 
   // Fire off bugzilla bug lists
-  for (var idx = 0; idx < bugQueries.length; idx++) {
-    let bugQuery = bugQueries[idx];
+  for (var idx = 0; idx < BugQueries.length; idx++) {
+    let bugQuery = BugQueries[idx];
     if (!("url" in bugQuery)) {
       //console.log('no url in query!');
       stepdown();
@@ -297,8 +298,8 @@ function getBugCounts() {
   }
 
   // Fire off update bot queries
-  for (var idx = 0; idx < bugQueries.length; idx++) {
-    let bugQuery = bugQueries[idx];
+  for (var idx = 0; idx < BugQueries.length; idx++) {
+    let bugQuery = BugQueries[idx];
 
     if (!("uburl" in bugQuery)) {
       //console.log('No uburl entry?', bugQuery);
