@@ -38,7 +38,6 @@ function main(json) {
   BUGZILLA_URL = triage.BUGZILLA_URL;
   BUGZILLA_REST_URL = triage.BUGZILLA_REST_URL;
 
-  $("#subtitle").replaceWith("<div id=\"subtitle\" class=\"subtitle\">Incoming Bug Triage</div>");
   switch (getTeam()) {
     case 'playback':
       document.getElementById('team-select').selectedIndex = 0;
@@ -91,8 +90,22 @@ function errorMsg(text) {
   LastErrorText = text;
 }
 
+// displayType: future, current, past
 function displayTitle(year, count, displayType) {
-  $("#title").append(" " + year);
+  let team = getTeam();
+  switch (team) {
+    case 'graphics':
+    $("#title").text("Graphics Team " + year + " Triage");
+    break;
+    case 'playback':
+    $("#title").text("Media Team " + year + " Triage");
+    break;
+    case 'webrtc':
+    $("#title").text("Web Conferencing Team " + year + " Triage");
+    break;
+  }
+  $("#subtitle").replaceWith("<div id=\"subtitle\" class=\"subtitle\"></div>");
+
   $("#header-bg").attr("class", "header-bg header-bg-" + displayType);
   if (displayType != "current") {
     $("#title").attr("class", "title-light");
