@@ -1,0 +1,284 @@
+
+"generic_bugzilla_search_template": "?v2=<AFTER>&v3=<NOT-AFTER>&<COMPONENT>&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&list_id=16022721&keywords_type=nowords&o3=changedafter&f5=bug_severity&keywords=meta&o2=changedafter&emailassigned_to1=1&f6=bug_type&n3=1&email1=nobody%40mozilla.org&f3=creation_ts&o5=equals&query_format=advanced&v6=defect&f1=OP&f2=creation_ts&f4=CP&emailtype1=exact&o6=equals&v5=--",
+"updatebot_bugzilla_search_template": "?query_format=advanced&v2=<AFTER>&v3=<NOT-AFTER>&<COMPONENT>&keywords_type=nowords&keywords=meta&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&emailassigned_to1=1&email1=nobody%40mozilla.org&emailtype1=exact&f1=OP&f4=CP&f5=bug_severity&o5=equals&v5=--&o2=changedafter&f2=creation_ts&f3=creation_ts&o3=changedafter&n3=1&v6=update-bot%40bmo.tld&o6=equals&f6=reporter",
+
+--
+
+&<COMPONENT>
+&bug_status=UNCONFIRMED
+&bug_status=NEW
+&bug_status=ASSIGNED
+&bug_status=REOPENED
+&emailassigned_to1=1
+&email1=nobody%40mozilla.org
+&emailtype1=exact
+&query_format=advanced
+
+&keywords_type=nowords
+&keywords=meta
+
+&f1=OP
+
+&o2=changedafter
+&f2=creation_ts
+?v2=<AFTER>
+
+&o3=changedafter
+&f3=creation_ts
+&n3=1
+&v3=<NOT-AFTER>
+
+&f4=CP
+
+&f5=bug_severity
+&o5=equals
+&v5=--
+
+&f6=bug_type
+&v6=defect
+&o6=equals
+
+&v7=update-bot%40bmo.tld
+&o7=equals
+&f7=reporter
+
+---
+
+https://bugzilla.mozilla.org/buglist.cgi?
+f5=bug_severity
+&query_format=advanced
+&f3=creation_ts
+&o6=equals
+&o8=equals
+&emailassigned_to1=1
+&f9=requestees.login_name
+&keywords=meta
+&v2=2023-3-4
+&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio
+&o2=changedafter
+&emailtype1=exact
+&f4=CP
+&v6=defect
+&v8=needinfo%3F
+&o5=equals
+&f8=flagtypes.name
+&list_id=16711927
+&f6=bug_type
+&o3=changedafter
+&email1=nobody%40mozilla.org
+&f10=CP
+&keywords_type=nowords
+&o9=notequals
+&f1=OP
+&n3=1
+&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED
+&v9=email
+&f7=OP
+&f2=creation_ts
+&v5=--
+&v3=2023-3-10
+
+
+
+
+"generic_bugzilla_search_template":
+?v2=<AFTER>
+&v3=<NOT-AFTER>
+&<COMPONENT>&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED
+&list_id=16022721
+&keywords_type=nowords
+&o3=changedafter
+&f5=bug_severity
+&keywords=meta
+&o2=changedafter
+&emailassigned_to1=1
+&f6=bug_type
+&n3=1
+&email1=nobody%40mozilla.org
+&f3=creation_ts
+&o5=equals
+&query_format=advanced
+&v6=defect
+&f1=OP
+&f2=creation_ts
+&f4=CP
+&emailtype1=exact
+&o6=equals
+&v5=--
+
+"updatebot_bugzilla_search_template":
+query_format=advanced
+&v2=<AFTER>
+&v3=<NOT-AFTER>
+&<COMPONENT>
+&keywords_type=nowords
+&keywords=meta
+&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED
+&emailassigned_to1=1
+&email1=nobody%40mozilla.org
+&emailtype1=exact
+&f1=OP
+&f4=CP
+&f5=bug_severity
+&o5=equals
+&v5=--
+&o2=changedafter
+&f2=creation_ts
+&f3=creation_ts
+&o3=changedafter
+&n3=1
+&v6=update-bot%40bmo.tld
+&o6=equals
+&f6=reporter
+
+&v7=defect
+&f7=bug_type
+&o7=equals
+
+&v1=email
+&o1=equals
+f1=requestees.login_name
+
+&v2=needinfo%3F
+&o2=equals
+&f2=flagtypes.name
+
+// TriageData[year].data;
+
+BugQueries = {
+}
+
+BugData.bugs[1-n] =
+{
+  "regressions": [],
+  "version": "Firefox 102",
+  "estimated_time": 0,
+  "cf_tracking_firefox119": "---",
+  "mentors_detail": [],
+  "flags": [],
+  "cf_cab_review": "---",
+  "cf_fx_points": "---",
+  "depends_on": [],
+  "creator_detail": {
+    "nick": "mgiammarco",
+    "real_name": "",
+    "name": "mgiammarco@gmail.com",
+    "email": "mgiammarco@gmail.com",
+    "id": 710500
+  },
+  "keywords": [
+    "perf:resource-use"
+  ],
+  "groups": [],
+  "dupe_of": null,
+  "priority": "--",
+  "cf_tracking_thunderbird_esr102": "---",
+  "creator": "mgiammarco@gmail.com",
+  "whiteboard": "",
+  "cf_status_firefox117": "---",
+  "cf_crash_signature": "",
+  "cf_user_story": "",
+  "alias": null,
+  "cf_rank": null,
+  "severity": "--",
+  "url": "",
+  "id": 1780732,
+  "remaining_time": 0,
+  "cf_tracking_firefox_relnote": "---",
+  "cf_status_firefox118": "---",
+  "is_confirmed": false,
+  "deadline": null,
+  "cf_tracking_firefox_esr115": "---",
+  "cf_status_firefox119": "---",
+  "status": "UNCONFIRMED",
+  "component": "Audio/Video",
+  "classification": "Components",
+  "cf_tracking_firefox118": "---",
+  "cf_performance_impact": "low",
+  "mentors": [],
+  "cf_accessibility_severity": "---",
+  "cf_tracking_thunderbird_esr115": "---",
+  "duplicates": [],
+  "product": "Core",
+  "cf_fx_iteration": "---",
+  "cf_tracking_firefox_esr102": "---",
+  "cf_status_firefox_esr115": "---",
+  "cf_qa_whiteboard": "",
+  "cc": [
+    "alice0775@gmail.com",
+    "rjesup@jesup.org"
+  ],
+  "cf_status_firefox_esr102": "---",
+  "assigned_to_detail": {
+    "real_name": "Nobody; OK to take it and work on it",
+    "nick": "nobody",
+    "name": "nobody@mozilla.org",
+    "email": "nobody@mozilla.org",
+    "id": 1
+  },
+  "cf_a11y_review_project_flag": "---",
+  "see_also": [],
+  "cf_tracking_firefox117": "---",
+  "is_cc_accessible": true,
+  "cf_webcompat_priority": "---",
+  "target_milestone": "---",
+  "is_open": true,
+  "platform": "Unspecified",
+  "cc_detail": [
+    {
+      "id": 293623,
+      "email": "alice0775@gmail.com",
+      "name": "alice0775@gmail.com",
+      "real_name": "Alice0775 White",
+      "nick": "alice0775"
+    },
+    {
+      "id": 11539,
+      "email": "rjesup@jesup.org",
+      "name": "rjesup@jesup.org",
+      "real_name": "Randell Jesup [:jesup] (needinfo me)",
+      "nick": "jesup"
+    }
+  ],
+  "op_sys": "Unspecified",
+  "resolution": "",
+  "last_change_time": "2023-08-02T22:25:58Z",
+  "regressed_by": [],
+  "assigned_to": "nobody@mozilla.org",
+  "cf_last_resolved": null,
+  "cf_status_thunderbird_esr115": "---",
+  "qa_contact": "",
+  "actual_time": 0,
+  "creation_time": "2022-07-22T07:59:41Z",
+  "cf_has_str": "---",
+  "cf_status_thunderbird_esr102": "---",
+  "votes": 0,
+  "is_creator_accessible": true,
+  "type": "defect",
+  "summary": "Memory leak",
+  "comment_count": 8,
+  "blocks": []
+}
+
+TriageData:
+{ 
+  2022: 
+    [
+      {
+        "who": "Alastor ",
+        "from": "2022-12-31",
+        "to": "2023-1-6",
+        "notAfter": "2023-1-7",
+        "url": "?v2=2022-12-31&v3=2023-1-7&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio&product=Core&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&list_id=16022721&keywords_type=nowords&o3=changedafter&f5=bug_severity&keywords=meta&o2=changedafter&emailassigned_to1=1&f6=bug_type&n3=1&email1=nobody%40mozilla.org&f3=creation_ts&o5=equals&query_format=advanced&v6=defect&f1=OP&f2=creation_ts&f4=CP&emailtype1=exact&o6=equals&v5=--",
+        "uburl": "?query_format=advanced&v2=2022-12-31&v3=2023-1-7&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio&product=Core&keywords_type=nowords&keywords=meta&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&emailassigned_to1=1&email1=nobody%40mozilla.org&emailtype1=exact&f1=OP&f4=CP&f5=bug_severity&o5=equals&v5=--&o2=changedafter&f2=creation_ts&f3=creation_ts&o3=changedafter&n3=1&v6=update-bot%40bmo.tld&o6=equals&f6=reporter"
+      },
+      {
+        "who": "Jim ",
+        "from": "2023-1-7",
+        "to": "2023-1-13",
+        "notAfter": "2023-1-14",
+        "url": "?v2=2023-1-7&v3=2023-1-14&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio&product=Core&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&list_id=16022721&keywords_type=nowords&o3=changedafter&f5=bug_severity&keywords=meta&o2=changedafter&emailassigned_to1=1&f6=bug_type&n3=1&email1=nobody%40mozilla.org&f3=creation_ts&o5=equals&query_format=advanced&v6=defect&f1=OP&f2=creation_ts&f4=CP&emailtype1=exact&o6=equals&v5=--",
+        "uburl": "?query_format=advanced&v2=2023-1-7&v3=2023-1-14&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio&product=Core&keywords_type=nowords&keywords=meta&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&emailassigned_to1=1&email1=nobody%40mozilla.org&emailtype1=exact&f1=OP&f4=CP&f5=bug_severity&o5=equals&v5=--&o2=changedafter&f2=creation_ts&f3=creation_ts&o3=changedafter&n3=1&v6=update-bot%40bmo.tld&o6=equals&f6=reporter"
+      },
+    ],
+}
