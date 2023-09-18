@@ -19,7 +19,7 @@ var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 
 /*
   TODO:
-    2) additional settings options
+     * additional settings options
 */
 
 $(document).ready(function () {
@@ -150,14 +150,14 @@ function loadBugListDetail() {
     }
   });
 
-  // Fire off a single bugzilla request per report
+  // Fire off a bugzilla request
   url = TriageConfig.jsonConfig.BUGZILLA_REST_URL + TriageData['uburl'];
   if (key != null && key.length) {
     url += "&api_key=" + key;
   }
 
-  // Limit what data we retreive for better performance.
-  url += "&include_fields=" + TriageConfig.jsonConfig.include_fields;
+  // Limit what data we retreive for better bugzilla query performance.
+  url += "&" + TriageConfig.jsonConfig.include_fields;
 
   console.log(TriageConfig.jsonConfig.BUGZILLA_URL + TriageData['uburl']);
 
@@ -201,8 +201,17 @@ function errorMsg(text) {
 function displayBugLists(displayCallback, div, data) {
   for (let idx = 0; idx < BugQueries.length; idx++) {
     let query = BugQueries[idx];
-    if (!("url" in query)) {
-      continue;
+    let qurl = '';
+    if (div == 'ubdata') {
+      if (!("uburl" in query)) {
+        continue;
+      }
+      qurl = query.uburl;
+    } else {
+      if (!("url" in query)) {
+        continue;
+      }
+      qurl = query.url;
     }
 
     let sfrom = query.from.split('-');
@@ -233,7 +242,7 @@ function displayBugLists(displayCallback, div, data) {
 
     // This id was generated in insertEmptyBugLists
     displayCallback(div, idx, query.bugcount,
-                    TriageConfig.jsonConfig.BUGZILLA_URL + query.url);
+                    TriageConfig.jsonConfig.BUGZILLA_URL + qurl);
 
   }
 }

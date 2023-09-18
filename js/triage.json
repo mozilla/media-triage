@@ -2,7 +2,9 @@
   "triage": {
     "BUGZILLA_URL": "https://bugzilla.mozilla.org/buglist.cgi",
     "BUGZILLA_REST_URL": "https://bugzilla.mozilla.org/rest/bug",
-    "refreshHours": 12,
+    "bugzilla_domain": "bugzilla.mozilla.org",
+    "bugzilla_test_domain": "bugzilla-dev.allizom.org",
+    "use_test_domain": false,
 
     "generic_bugzilla_search_template": [
       "<COMPONENT>",
@@ -20,12 +22,12 @@
 
       "f1=OP",
 
-      "o2=changedafter",
       "f2=creation_ts",
+      "o2=changedafter",
       "v2=<AFTER>",
 
-      "o3=changedafter",
       "f3=creation_ts",
+      "o3=changedafter",
       "n3=1",
       "v3=<NOT-AFTER>",
 
@@ -59,7 +61,7 @@
       "f8=flagtypes.name"
     ],
 
-    "include_fields": "last_change_time,creation_time,summary,id,flags,severity,priority,assigned_to",
+    "include_fields": "include_fields=last_change_time,creation_time,summary,id,flags,severity,priority,assigned_to",
 
     "graphics_components": "product=Core&component=Graphics&component=Graphics%3A%20Canvas2D&component=Graphics%3A%20CanvasWebGL&component=Graphics%3A%20Color%20Management&component=Graphics%3A%20Image%20Blocking&component=Graphics%3A%20ImageLib&component=Graphics%3A%20Layers&component=Graphics%3A%20Text&component=Graphics%3A%20WebGPU&component=Graphics%3A%20WebRender",
     "media_components": "component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20MediaStreamGraph&component=Audio%2FVideo%3A%20Playback&component=Audio%2FVideo%3A%20Recording&component=Web%20Audio",
