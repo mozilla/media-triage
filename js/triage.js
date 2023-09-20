@@ -302,7 +302,7 @@ function insertEmptyBugLists(year, count, displayType) {
       <div class="bugcount">
         <div class="who">Kelsey Gilbert</div>
         <div class="date">(Dec 30 - Jan 6)</div>
-        <div class="data"><a target="_buglist" href="https://bugzilla.mozilla.org/buglist.cgi?v2=2022-12-30&amp;v3=2023-1-6&amp;component=Graphics&amp;component=Graphics%3A%20Canvas2D&amp;component=Graphics%3A%20CanvasWebGL&amp;component=Graphics%3A%20Color%20Management&amp;component=Graphics%3A%20Image%20Blocking&amp;component=Graphics%3A%20ImageLib&amp;component=Graphics%3A%20Layers&amp;component=Graphics%3A%20Text&amp;component=Graphics%3A%20WebGPU&amp;component=Graphics%3A%20WebRender&amp;product=Core&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;list_id=16022721&amp;keywords_type=nowords&amp;o3=changedafter&amp;f5=bug_severity&amp;keywords=meta&amp;o2=changedafter&amp;emailassigned_to1=1&amp;f6=bug_type&amp;n3=1&amp;email1=nobody%40mozilla.org&amp;f3=creation_ts&amp;o5=equals&amp;query_format=advanced&amp;v6=defect&amp;f1=OP&amp;f2=creation_ts&amp;f4=CP&amp;emailtype1=exact&amp;o6=equals&amp;v5=--">1</a><div class="data sub">B</div></div>
+        <div class="data"><a target="_buglist" href="https://bug...">1</a><div class="data sub">B</div></div>
       </div>
       ...
   </div>
@@ -318,8 +318,7 @@ function updateBugList(divId, divIndex, totalBugs, searchUrl) {
   }
 
   html = "<div class='data'><a target='_buglist' href='" + searchUrl + "'>" + totalBugs + "</a><div class='data sub'>B</div></div>";
-
- $("#" + divId + divIndex).replaceWith(html);
+  $("#" + divId + divIndex).replaceWith(html);
 }
 
 // updatebot list
