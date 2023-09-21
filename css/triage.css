@@ -95,7 +95,8 @@ a:hover {
 
 /* individual bucket divs */
 .bugcount {
-  border: 0px solid gray;
+  border: 1px solid #D4DDE4;
+  border-radius: 4px;
   text-align: center;
 }
 
