@@ -311,6 +311,20 @@ a:hover {
 }
 
 #progressmeter {
-  width: 40%%;
+  width: 40%;
   height: 15px;
+}
+
+.source {
+  padding-top: 20px;
+  border: 0px solid gray;
+  font-family: Moz;
+  color: #a0a0a0;
+  display: inline-block;
+  font-size: 1.0vmin;
+}
+
+.source a {
+  text-decoration: none;
+  color: #808080;
 }

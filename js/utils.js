@@ -138,6 +138,10 @@ function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
   return null;
 }
 
+function dateToBz(date) {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+
 /*
  * Returns a data structure containing all of the ics entries,
  * names, dates, and some general stats in the root object. 
@@ -178,10 +182,6 @@ function parseICSData(icsdata) {
         (summary.indexOf('playback') == -1 && summary.indexOf('media') == -1)
        ) {
         continue;
-    }
-
-    function dateToBz(date) {
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     }
 
     var who = ev.summary;
@@ -343,7 +343,9 @@ function setupQueryURLs(displayFuture) {
   ubsearch = ubsearch.replace(/<COMPONENT>/g, components);
   ubsearch = ubsearch.replace(/<AFTER>/g, TriageData.min).replace(/<NOT-AFTER>/g, TriageData.max);
   TriageData["uburl"] = ubsearch;
-  console.log(ubsearch);
+
+  // console.log(ubsearch);
+
   return BugQueries.length;
 }
 
