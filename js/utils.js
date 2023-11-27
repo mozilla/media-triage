@@ -303,7 +303,13 @@ function setupQueryURLs(displayFuture) {
     //  search_params += entry + "&";
     //});
 
-    // Bugzilla searches exclude start date, include end date.
+    // --------------------------------------------------------
+    // ICS dates should span 8 days since they get plugged
+    // directly into bugzilla searches.
+    // Bugzilla searches EXCLUDE start date, INCLUDE end date.
+    // console.log(BugQueries[i].from, '->', BugQueries[i].to)
+    // --------------------------------------------------------
+
     search_params = search_params.replace(/<COMPONENT>/g, components);
     search_params = search_params.replace(/<AFTER>/g, BugQueries[i].from).replace(/<NOT-AFTER>/g, BugQueries[i].to);
     BugQueries[i]["url"] = search_params;

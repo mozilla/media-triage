@@ -222,16 +222,34 @@ function displayBugLists(displayCallback, div, data) {
 
     // Both to and from will be stored internally as UTC but will get converted to local
     // time when in use, so be careful.
+
+    // Date.UTC(year, monthIndex, day, hour, minute, second, millisecond)
     let from = new Date(Date.UTC(sfrom[0], parseInt(sfrom[1])-1, sfrom[2], 0, 0, 0, 0));
+
+    // If the ICS start and end dates span 7 days, use this for accurate bug counts.
+    // let to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 23, 59, 59, 0));
+
+    // If the ICS start and end dates span 8 days, use this for accurate bug counts.
     let to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 0, 0, 0, 0));
+
+    //console.log('from='+from.toUTCString());
+    //console.log('to='+to.toUTCString());
 
     for (let idy = 0; idy < data.bugs.length; idy++) {
       let bug = data.bugs[idy];
-      let changeTime = new Date(bug.last_change_time); // 2023-08-02T22:25:58Z
+
+      // a lot of the time this isn't populated, resulting in an invalid date
+      //let changeTime = new Date(bug.last_change_time); // 2023-08-02T22:25:58Z
+      //console.log('change date:' + bug.last_change_time);
+
       let creationTime = new Date(bug.creation_time);
+      //console.log('bug creation time:' + bug.creation_time);
       if (creationTime.valueOf() >= from.valueOf() && creationTime.valueOf() <= to.valueOf()) { // UTC compare
-        //console.log('fits:', bug.id, bug.summary, creationTime, changeTime);
+        //console.log('fits:', bug.id, bug.summary, creationTime);
         count++;
+      } else {
+        //console.log('no fit:', bug.id, bug.summary);
+        //console.log(creationTime.valueOf(), from.valueOf(), to.valueOf())
       }
     }
     query.bugcount = count;
