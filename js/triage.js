@@ -55,6 +55,10 @@ function run() {
       icsurl = TriageConfig.jsonConfig.graphics_ics;
       break;
   }
+  
+  let random = Math.floor(Math.random() * 9e9);
+  icsurl += '?rand=' + random;
+  console.log("Loading [" + icsurl + "]");
 
   $.ajax({
     url: icsurl,
@@ -69,6 +73,8 @@ function run() {
       // Store ics data in our global data object. See
       // Notes.txt for format info.
       TriageData = parseICSData(data);
+
+      //console.log(TriageData);
 
       let now = new Date();
       let currentYear = now.getFullYear();
@@ -376,18 +382,14 @@ function displayTitle(year, count, displayType) {
   }
 }
 
+
 function displayYearFooter(currentYear, displayType, icsBugQueries) {
   var footer = "<div id=\"footer\" class=\"footer-" + displayType + "\">";
   var nextYear = currentYear + 1;
 
-  // If the ics file has dates for future years. Generally shouldn't show up unless you're
-  // near the end of the year and the generation script ran into the new year.
-  if (("" + nextYear) in icsBugQueries) {
-    footer += "<a href=\"?year=" + (nextYear) + "&future=1&team=" + getTeam() + "\">" + (nextYear) + "</a> | ";
-  }
-
   // The future schedule
-  footer += "<a href=\"?year=" + currentYear + "&future=1&team=" + getTeam() + "\">Schedule</a> | ";
+  footer += "<a href=\"?year=" + nextYear + "&future=1&team=" + getTeam() + "\">Next Year</a> | ";
+  footer += "<a href=\"?year=" + currentYear + "&future=1&team=" + getTeam() + "\">Full Year</a> | ";
 
   let endYear = 2022;
   for (var year = currentYear; year >= endYear; year--) {
