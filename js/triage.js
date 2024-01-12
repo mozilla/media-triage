@@ -341,7 +341,7 @@ function updateBugList(divId, divIndex, totalBugs, searchUrl) {
     return;
   }
 
-  html = "<div class='data'><a target='_buglist' href='" + searchUrl + "'>" + totalBugs + "</a><div class='data sub'>B</div></div>";
+  html = "<div class='data'><a target='_buglist' href='" + searchUrl + "'>" + totalBugs + "</a><div class='data sub'><abbr title=\"Bug(s) in Bugzilla with no `Severity` set\">B</abbr></div></div>";
   $("#" + divId + divIndex).replaceWith(html);
 }
 
@@ -353,7 +353,7 @@ function updateBotList(divId, divIndex, totalBugs, searchUrl) {
   }
 
   $("#ubdata" + divIndex).replaceWith("<div class='ubdata'><a target='_buglist' href=\"" + searchUrl
-                                  + "\">" + totalBugs + "</a><div class='updata sub'>UB</div></div>" );
+                                  + "\">" + totalBugs + "</a><div class='updata sub'><abbr title=\"UpdateBot bug(s) in Bugzilla with no `Severity` set\">UB</abbr></div></div>" );
 }
 
 // displayType: future, current, past

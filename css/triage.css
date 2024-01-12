@@ -129,6 +129,7 @@ a:hover {
   font-size: 1vw;
   display: inline-block;
   color: #000000;
+  cursor: help;
 }
 
 #errors {
