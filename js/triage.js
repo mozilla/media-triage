@@ -55,7 +55,7 @@ function run() {
       icsurl = TriageConfig.jsonConfig.graphics_ics;
       break;
   }
-  
+
   let random = Math.floor(Math.random() * 9e9);
   icsurl += '?rand=' + random;
   console.log("Loading [" + icsurl + "]");
@@ -120,7 +120,7 @@ function loadBugListDetail() {
 
   // Fire off a single bugzilla request per report
   let url = TriageConfig.jsonConfig.BUGZILLA_REST_URL + TriageData['url'];
-  let key = getAPIKeyFromStorage(); 
+  let key = getAPIKeyFromStorage();
   if (key != null && key.length) {
     url += "&api_key=" + key;
   }
@@ -277,7 +277,7 @@ function populateBuckets(year, count, displayType) {
     return;
   }
 
-  // Adds div placeholders for bucket entries. 
+  // Adds div placeholders for bucket entries.
   insertEmptyBugLists(year, count, displayType);
 
   for (let i = 0; i < BugQueries.length; i++) {
@@ -336,7 +336,7 @@ function insertEmptyBugLists(year, count, displayType) {
 function updateBugList(divId, divIndex, totalBugs, searchUrl) {
   let html = '';
   if (totalBugs == 0) {
-    html = "<div class='data'><a target='_buglist' href='" + searchUrl + "'>&nbsp;</a></div>";
+    html = "<div class='data'><a target='_buglist' href='" + searchUrl + "'>0</a></div>";
     $("#data" + divIndex).replaceWith(html);
     return;
   }
