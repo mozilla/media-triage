@@ -30,21 +30,10 @@ a:hover {
   z-index: -1;
   margin: 0px;
   height: 110px;
+  border-right: 100vw solid #FF9500;
 }
 #title-image {
   width: 75px;
-}
-
-.header-bg-current {
-  border-right: 100vw solid #FF9500;
-}
-
-.header-bg-past {
-  border-right: 100vw solid #00539F;
-}
-
-.header-bg-future {
-  border-right: 100vw solid #002147;
 }
 
 .title-light {
@@ -100,11 +89,13 @@ a:hover {
   text-align: center;
 }
 
+/* bucket names */
 .bugcount .who {
   font-size: 1.3vw;
   display: inline-block;
 }
 
+/* bucket dates */
 .bugcount .date {
   font-size: 0.9vw;
   display: block;
@@ -122,7 +113,7 @@ a:hover {
 }
 
 .greyedout {
-  color: #D4DDE4;
+  color: #bcbcbc;
 }
 
 .bugcount .sub {
@@ -136,7 +127,7 @@ a:hover {
   color:red;
 }
 
-#footer {
+.footer {
   position: fixed;
   bottom: 0px;
   width: 100%;
@@ -145,26 +136,13 @@ a:hover {
   padding-top: 2vh;
   font-size: 2vmin;
   text-align: center;
-}
-
-#footer a {
-  padding-top: 1vmin;
-  padding-left: 3vmin;
-  padding-right: 3vmin;
-}
-
-.footer-current {
   background-color: #FF9500;
 }
 
-.footer-past {
-  background-color: #00539F;
-  color: #EAEFF2;
-}
-
-.footer-future {
-  background-color: #002147;
-  color: #EAEFF2;
+.footer a {
+  padding-top: 1vmin;
+  padding-left: 3vmin;
+  padding-right: 3vmin;
 }
 
 /* Toolbar button controls */

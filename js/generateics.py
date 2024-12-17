@@ -21,114 +21,134 @@ RRULE:FREQ=WEEKLY;WKST=SU;INTERVAL=7;BYDAY=SA
 DTSTAMP:20221227T134727Z
 CREATED:20201210T121142Z
 LAST-MODIFIED:20221227T134435Z
-ORGANIZER;CN=Media Triage:mailto:mozilla.com_ovr8sdlln71kenc5nb43mo514o@gro
- up.calendar.google.com
-DESCRIPTION:https://mozilla.github.io/media-triage/?team=webrtc
+ORGANIZER;CN=Media Triage:%owneremail%
+DESCRIPTION:%description%
+SUMMARY:%summary%
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 UID:%uid%
 ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;
  CN=%email%;X-NUM-GUESTS=0:mailto:%email%
-SUMMARY:%summary%
 END:VEVENT"""
 
-# print(basicTemplate)
+# Note, spread in the ics is 8 days due to bugzilla query funniness.
+# DTSTART;VALUE=DATE:20241209
+# DTEND;VALUE=DATE:20241216
+#  Opened: (changed after) 2024-12-9 Opened: (not changed after) 2024-12-16 
+# so non-inclusive of the 9th, including the 16th
+# todo:
+#  - cal bug - displays both dates accurately
 
-initDate = datetime.date.fromisoformat('2022-12-31')
-endDate = datetime.date.fromisoformat('2024-01-01')
+teamName = 'webrtc'
+
+ownerEmailStr = 'mailto:jmathies@mozilla.com' # owneremail
+
+# Note this date must start on a Sunday or the cal will be off by the week
+# Alastor and Jim dec 30th, 2024
+initDate = datetime.date.fromisoformat('2023-12-30') 
+# This can land anywhere in the last week
+finalDate = datetime.date.fromisoformat('2026-01-05')
 delta = datetime.timedelta(days=7)
 
-webrtc = [{
-  'summary': 'Jan-Ivar WebRTC Triage',
-  'email': 'jib@mozilla.com'
-},
-{
-  'summary': 'Michael WebRTC Triage',
-  'email': 'mfroman@mozilla.com'
-},
-{
-  'summary': 'Jim WebRTC Triage',
-  'email': 'jmathies@mozilla.com'
-},
-{
-  'summary': 'Nico WebRTC Triage',
-  'email': 'ngrunbaum@mozilla.com'
-},
-{
-  'summary': 'Andreas WebRTC Triage',
-  'email': 'apehrson@mozilla.com'
-},
-{
-  'summary': 'Daniel WebRTC Triage',
-  'email': 'dbaker@mozilla.com'
-},
-{
-  'summary': 'Byron WebRTC Triage',
-  'email': 'bwc@mozilla.com'
-}]
-
-media = [{
-  'summary': 'Alastor Media Triage',
-  'email': 'alwu@mozilla.com'
-},
-{
-  'summary': 'Jim Media Triage',
-  'email': 'jmathies@mozilla.com'
-},
-{
-  'summary': 'Mathew Media Triage',
-  'email': 'mgregan@mozilla.com'
-},
-{
-  'summary': 'Karl Media Triage',
-  'email': 'ktomlinson@mozilla.com'
-},
-{
-  'summary': 'Ashley Media Triage',
-  'email': 'azebrowski@mozilla.com'
-},
-{
-  'summary': 'Paul Media Triage',
-  'email': 'padenot@mozilla.com'
-},
-{
-  'summary': 'Chun-Min Media Triage',
-  'email': 'cchang@mozilla.com'
-},
-{
-  'summary': 'John Media Triage',
-  'email': 'jolin@mozilla.com'
-},
-{
-  'summary': 'Andrew Media Triage',
-  'email': 'aosmond@mozilla.com'
+dataset = {
+  'webrtcdesc': 'https://mozilla.github.io/media-triage/?team=webrtc',
+  'mediadesc': 'https://mozilla.github.io/media-triage/?team=media',
+  'webrtc': [{
+    'summary': 'Jan-Ivar WebRTC Triage',
+    'email': 'jib@mozilla.com'
+    },
+    {
+      'summary': 'Michael WebRTC Triage',
+      'email': 'mfroman@mozilla.com'
+    },
+    {
+      'summary': 'Jim WebRTC Triage',
+      'email': 'jmathies@mozilla.com'
+    },
+    {
+      'summary': 'Nico WebRTC Triage',
+      'email': 'ngrunbaum@mozilla.com'
+    },
+    {
+      'summary': 'Andreas WebRTC Triage',
+      'email': 'apehrson@mozilla.com'
+    },
+    {
+      'summary': 'Daniel WebRTC Triage',
+      'email': 'dbaker@mozilla.com'
+    },
+    {
+      'summary': 'Byron WebRTC Triage',
+      'email': 'bwc@mozilla.com'
+    }],
+  'media': [{
+    'summary': 'Alastor Media Triage',
+    'email': 'alwu@mozilla.com'
+    },
+    {
+      'summary': 'Jim Media Triage',
+      'email': 'jmathies@mozilla.com'
+    },
+    {
+      'summary': 'Mathew Media Triage',
+      'email': 'mgregan@mozilla.com'
+    },
+    {
+      'summary': 'Karl Media Triage',
+      'email': 'ktomlinson@mozilla.com'
+    },
+    {
+      'summary': 'Ashley Media Triage',
+      'email': 'azebrowski@mozilla.com'
+    },
+    {
+      'summary': 'Paul Media Triage',
+      'email': 'padenot@mozilla.com'
+    },
+    {
+      'summary': 'Chun-Min Media Triage',
+      'email': 'cchang@mozilla.com'
+    },
+    {
+      'summary': 'John Media Triage',
+      'email': 'jolin@mozilla.com'
+    },
+    {
+      'summary': 'Andrew Media Triage',
+      'email': 'aosmond@mozilla.com'
+    }]
 }
-]
 
-#teamLength = len(webrtc)
-#teamData = webrtc
-teamLength = len(media)
-teamData = media
-
-# print('team length=', teamLength)
-
+teamData = dataset[teamName]
+teamLength = len(teamData)
 entryIdx = 0
-start = initDate
-while start < endDate:
-  end = start + (delta - datetime.timedelta(days=1))
+
+weekDate = initDate
+endDate = initDate
+
+while endDate < finalDate:
+  # start date is Sunday (inclusive)
+  startDate = weekDate
+  # end date is the next Saturday (inclusive)
+  endDate = startDate + datetime.timedelta(days=6)
+  # In the bugzilla query processing in triage.js, the start date will start
+  # at midnight of startDate, and end at midnight on endDate.
+
   uuidStr = str(uuid.uuid4())
   
-  # print("start date:", str(start), " end date:", str(end))
+  # print("start date:", str(startDate), " end date:", str(endDate), ' ', teamData[entryIdx]['summary'])
 
   entry = basicTemplate.replace("%summary%", teamData[entryIdx]['summary'])
   entry = entry.replace("%email%", teamData[entryIdx]['email'])
-  entry = entry.replace("%start%", start.strftime("%Y%m%d"))
-  entry = entry.replace("%end%", end.strftime("%Y%m%d"))
+  entry = entry.replace("%start%", startDate.strftime("%Y%m%d"))
+  entry = entry.replace("%end%", endDate.strftime("%Y%m%d"))
   entry = entry.replace("%uid%", uuidStr)
+  entry = entry.replace("%owneremail%", ownerEmailStr)
+  entry = entry.replace("%description%", dataset[teamName + 'desc'])
 
   print(entry)
 
-  start += delta
+  weekDate += delta
 
   entryIdx += 1
   if entryIdx == teamLength:

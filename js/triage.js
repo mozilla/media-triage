@@ -79,23 +79,21 @@ function run() {
       let now = new Date();
       let currentYear = now.getFullYear();
       let year = getYear(now);
-      let future = $.url().param('future');
-      let displayType = (future ? "future" : (year == currentYear ? "current" : "past"));
 
       // Global that points to the buckets data for the display year.
       BugQueries = TriageData[year].data;
 
       // Generates Bugzilla query strings from ics data
-      let count = setupQueryURLs(future);
+      let count = setupQueryURLs(true);
 
       // Updates the page title.
-      displayTitle(year, count, displayType);
+      displayTitle(year, count);
 
       // Add engineer names, bucket dates, and grayed out '?' buckets.
-      populateBuckets(year, count, displayType);
+      populateBuckets(year, count);
 
       // Display links for other years and the shedule
-      displayYearFooter(currentYear, displayType, BugQueries);
+      displayYearFooter(currentYear, BugQueries);
 
       // Make a single query for all bugs for both lists.
       loadBugListDetail();
@@ -220,6 +218,7 @@ function displayBugLists(displayCallback, div, data) {
       qurl = query.url;
     }
 
+    // Same dates we display in html
     let sfrom = query.from.split('-');
     let sto = query.to.split('-');
 
@@ -231,12 +230,14 @@ function displayBugLists(displayCallback, div, data) {
 
     // Date.UTC(year, monthIndex, day, hour, minute, second, millisecond)
     let from = new Date(Date.UTC(sfrom[0], parseInt(sfrom[1])-1, sfrom[2], 0, 0, 0, 0));
-
-    // If the ICS start and end dates span 7 days, use this for accurate bug counts.
-    // let to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 23, 59, 59, 0));
-
-    // If the ICS start and end dates span 8 days, use this for accurate bug counts.
-    let to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 0, 0, 0, 0));
+    let to;
+    if (getTeam() == 'graphics') {
+      // If the ICS start and end dates span 8 days, use this for accurate bug counts.
+      to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 0, 0, 0, 0));
+    } else {
+      // If the ICS start and end dates span 7 days, use this for accurate bug counts.
+      to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 23, 59, 59, 0));
+    }
 
     //console.log('from='+from.toUTCString());
     //console.log('to='+to.toUTCString());
@@ -272,13 +273,13 @@ function displayBugLists(displayCallback, div, data) {
 }
 
 // Add engineer names, bucket dates, and grayed out '?' buckets.
-function populateBuckets(year, count, displayType) {
+function populateBuckets(year, count) {
   if (!BugQueries) {
     return;
   }
 
   // Adds div placeholders for bucket entries. 
-  insertEmptyBugLists(year, count, displayType);
+  insertEmptyBugLists(year, count);
 
   for (let i = 0; i < BugQueries.length; i++) {
     let query = BugQueries[i];
@@ -291,30 +292,35 @@ function populateBuckets(year, count, displayType) {
     let dto = query.to.split('-');
     let id = year + "-" + i;
 
-    let markup = "<div class=\"bugcount\"><div class='who'>"
+    // Gray future buckets
+    let now = new Date();
+    let endDate = new Date(dfrom[0], parseInt(dfrom[1])-1, dfrom[2], 0, 0, 0, 0);
+    let cssTag = 'greyedout';
+    if (now > endDate) {
+      cssTag = '';
+    }
+
+    let markup = "<div class='bugcount'><div class='who " + cssTag + "'>"
       + query.who
       + "</div>"
-      + "<div class='date'>("
+      + "<div class='date " + cssTag + "'>("
       + MONTHS[dfrom[1]-1] + " " + dfrom[2] + " - "
       + MONTHS[dto[1]-1] + " " + dto[2] + ")</div>"
-      + "<div id=\"data" + i + "\"" + " class=\"data greyedout\">?</div>"
-      + "<div id=\"ubdata" + i + "\"" + " class=\"data greyedout\">?</div>"
+      + "<div id='data" + i + "'" + " class='data greyedout'>?</div>"
+      + "<div id='ubdata" + i + "'" + " class='data greyedout'>?</div>"
       + "</div>";
     // This id was generated in insertEmptyBugLists
     $("#reportDiv" + id).replaceWith(markup);
   }
 }
 
-function insertEmptyBugLists(year, count, displayType) {
+function insertEmptyBugLists(year, count) {
   let content = "";
 
   if (BugQueries) {
     for (let i = 0; i < count; i++) {
       let sfrom = BugQueries[i].from.split('-');
       let from = new Date(Date.UTC(sfrom[0], parseInt(sfrom[1])-1, sfrom[2], 0, 0, 0, 0));
-      if (displayType != 'future' && from > Date.now())
-        break;
-
       content += "<div class='bugcount' id='reportDiv" + year + "-" + i + "'></div>";
     }
     $("#content").replaceWith(content);
@@ -356,8 +362,7 @@ function updateBotList(divId, divIndex, totalBugs, searchUrl) {
                                   + "\">" + totalBugs + "</a><div class='updata sub'><abbr title=\"UpdateBot bug(s) in Bugzilla with no `Severity` set\">UB</abbr></div></div>" );
 }
 
-// displayType: future, current, past
-function displayTitle(year, count, displayType) {
+function displayTitle(year, count) {
   let team = getTeam();
 
   let title = '';
@@ -374,24 +379,17 @@ function displayTitle(year, count, displayType) {
   }
   document.title = title;
   $("#title").text(title);
-
-  $("#header-bg").attr("class", "header-bg header-bg-" + displayType);
-  if (displayType != "current") {
-    $("#title").attr("class", "title-light");
-    $("#subtitle").attr("class", "subtitle title-light");
-  }
 }
 
 
-function displayYearFooter(currentYear, displayType, icsBugQueries) {
-  var footer = "<div id=\"footer\" class=\"footer-" + displayType + "\">";
+function displayYearFooter(currentYear, icsBugQueries) {
+  var footer = "<div id=\'footer\' class=\'footer\'>";
   var nextYear = currentYear + 1;
 
   // The future schedule
-  footer += "<a href=\"?year=" + nextYear + "&future=1&team=" + getTeam() + "\">Next Year</a> | ";
-  footer += "<a href=\"?year=" + currentYear + "&future=1&team=" + getTeam() + "\">Full Year</a> | ";
+  footer += "<a href=\'?year=" + nextYear + "&team=" + getTeam() + "\'>" + nextYear + "</a> | ";
 
-  let endYear = 2022;
+  let endYear = 2023;
   for (var year = currentYear; year >= endYear; year--) {
     footer += "<a href=\"?year=" + year + "&team=" + getTeam() + "\">" + year + "</a>";
     if (year != endYear) {
