@@ -231,14 +231,14 @@ function displayBugLists(displayCallback, div, data) {
     // Date.UTC(year, monthIndex, day, hour, minute, second, millisecond)
     let from = new Date(Date.UTC(sfrom[0], parseInt(sfrom[1])-1, sfrom[2], 0, 0, 0, 0));
     let to;
-    if (getTeam() == 'graphics') {
-      // If the ICS start and end dates span 8 days, use this for accurate bug counts.
-      to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 0, 0, 0, 0));
-    } else {
-      // If the ICS start and end dates span 7 days, use this for accurate bug counts.
-      to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 23, 59, 59, 0));
-    }
 
+    // If the ICS start and end dates span 8 days, use this for accurate bug counts.
+    to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 0, 0, 0, 0));
+
+    // If the ICS start and end dates span 7 days, use this for accurate bug counts.
+    //to = new Date(Date.UTC(sto[0], parseInt(sto[1])-1, sto[2], 23, 59, 59, 0));
+
+    //console.log(query.who);
     //console.log('from='+from.toUTCString());
     //console.log('to='+to.toUTCString());
 

@@ -34,8 +34,8 @@ END:VEVENT"""
 # Note, spread in the ics is 8 days due to bugzilla query funniness.
 # DTSTART;VALUE=DATE:20241209
 # DTEND;VALUE=DATE:20241216
-#  Opened: (changed after) 2024-12-9 Opened: (not changed after) 2024-12-16 
-# so non-inclusive of the 9th, including the 16th
+#  Opened: (changed after) 2024-12-9:00:00:00 Opened: (not changed after) 2024-12-16:00:00:00
+# so inclusive of the 9th, non-including the 16th
 # todo:
 #  - cal bug - displays both dates accurately
 
@@ -130,7 +130,7 @@ while endDate < finalDate:
   # start date is Sunday (inclusive)
   startDate = weekDate
   # end date is the next Saturday (inclusive)
-  endDate = startDate + datetime.timedelta(days=6)
+  endDate = startDate + datetime.timedelta(days=7)
   # In the bugzilla query processing in triage.js, the start date will start
   # at midnight of startDate, and end at midnight on endDate.
 
