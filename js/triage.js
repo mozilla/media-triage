@@ -24,7 +24,7 @@ var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 
 $(document).ready(function () {
   if (getTeam() == undefined) {
-    window.location.href = window.location.href + "?year=2023&team=media"
+    window.location.href = window.location.href + "?year=2025&team=media"
     return;
   }
   $.getJSON('js/triage.json', function(data) {
