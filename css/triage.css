@@ -14,7 +14,7 @@ a {
 }
 
 a:hover {
-  color: highlight;
+  text-decoration: underline;
 }
 
 .header {
@@ -23,27 +23,15 @@ a:hover {
   height: 110px;
   text-align: center;
   font-size: 2vmin;
+  background-color: #FF9500;
 }
 
-.header-bg {
-  position: absolute;
-  z-index: -1;
-  margin: 0px;
-  height: 110px;
-  border-right: 100vw solid #FF9500;
-}
 #title-image {
   width: 75px;
 }
 
 .title-light {
   color: #EAEFF2;
-}
-
-#div-team-select {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
 }
 
 .settings-button-container {
@@ -62,8 +50,8 @@ a:hover {
 }
 
 .announcement a {
-  color:dodgerblue;
-  text-decoration:underline;
+  color: dodgerblue;
+  text-decoration: underline;
 }
 
 /* temporary, gets replaced with buglists */
@@ -75,7 +63,6 @@ a:hover {
 
 #buglists {
   height: 100%;
-  border: 0px solid blue;
   display: grid;
   grid-template-columns: repeat(7, 14%);
   grid-gap: 2px;
@@ -124,7 +111,7 @@ a:hover {
 }
 
 #errors {
-  color:red;
+  color: red;
 }
 
 .footer {
@@ -150,7 +137,6 @@ a:hover {
 .command-button-container {
   padding-left: 2vmin;
   padding-right: 2vmin;
-  border: 0px solid green;
 }
 
 .command-button:disabled {
@@ -161,27 +147,16 @@ a:hover {
   padding-top: 3px;
   float: left;
   font-size: 1.75vmin;
-  font-family: Moz;
 }
 
 #team-select, #team-option {
   padding: 5px;
-  font-family: Moz;
 }
 
 .command-button {
   padding: 5px;
   margin-left: 10px;
-  font-family: Moz;
   float: right;
-}
-
-.command-button-hidden {
-  padding: 5px;
-  margin-left: 10px;
-  font-family: Moz;
-  float: right;
-  visibility: collapse;
 }
 
 .button-separator {
@@ -193,31 +168,27 @@ a:hover {
 .settings-button-container {
   padding: 0px;
   margin: 0px;
-  border: 0px solid blue;
   float: right;
 }
 
 .alert-icon {
   position: absolute;
   visibility: hidden;
+  width: 10px;
+  height: 10px;
   margin-left: 65px;
   margin-top: -2px;
 }
 
 /* Setting panel container */
 #prompt-query-account {
-  font-size: 1.5vmin;
-  position: absolute;
   font-size: 1vmin;
   width: 50%;
   box-shadow: 4px 4px 2px 2px rgba(0,0,0,.1);
   position: fixed;
   top: 150px;
   border: 3px solid #cdc6b7;
-  border-radius:2px;
-}
-
-.prompt-buttons-form {
+  border-radius: 2px;
 }
 
 .prompt-buttons-form #btn-confirm, #btn-cancel {
@@ -238,8 +209,7 @@ a:hover {
 
 .settings-container {
   display: grid;
-  gap: 0px;
-  grid-row-gap: 5px;
+  row-gap: 5px;
   width: 100%;
   margin-bottom: 20px;
   font-size: 2vmin;
@@ -250,16 +220,13 @@ a:hover {
   margin-top: 10px;
 }
 
-/* centered form some reason? */
 .settings-header {
   grid-column: 1 / span 2;
-  /* margin-top: 20px;*/
   border-bottom: 1px solid #e0e0e0;
 }
 
 .settings-col1 {
   grid-column: 1;
-  padding-right: 0px;
   justify-self: center;
   font-size: 1vmin;
   display: flex;
@@ -269,7 +236,6 @@ a:hover {
 
 .settings-col2 {
   grid-column: 2;
-  padding-left: 0px;
   font-size: 1.2vmin;
   align-items: start;
 }
@@ -296,8 +262,6 @@ a:hover {
 
 .source {
   padding-top: 20px;
-  border: 0px solid gray;
-  font-family: Moz;
   color: #a0a0a0;
   display: inline-block;
   font-size: 1.0vmin;
