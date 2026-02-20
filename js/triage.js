@@ -70,8 +70,7 @@ function run() {
     success: function(data) {
       // ICS DATA LOADED
 
-      // Store ics data in our global data object. See
-      // Notes.txt for format info.
+      // Store ics data in our global data object.
       TriageData = parseICSData(data);
 
       //console.log(TriageData);
@@ -365,20 +364,11 @@ function updateBotList(divId, divIndex, totalBugs, searchUrl) {
 function displayTitle(year, count) {
   let team = getTeam();
 
-  let title = '';
-  switch (team) {
-    case 'graphics':
-    title = "Graphics Team " + year + " Triage";
-    break;
-    case 'media':
-    title = "Media Team " + year + " Triage";
-    break;
-    case 'webrtc':
-    title = "Web Conferencing Team " + year + " Triage";
-    break;
-  }
-  document.title = title;
-  $("#title").text(title);
+  $(".team-title").hide();
+  let $el = $("#title-" + team);
+  $el.find(".title-year").text(year);
+  $el.show();
+  document.title = $el.text();
 }
 
 

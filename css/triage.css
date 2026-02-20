@@ -34,6 +34,10 @@ a:hover {
   color: #EAEFF2;
 }
 
+.team-title {
+  display: none;
+}
+
 .settings-button-container {
   display: inline-block;
 }
