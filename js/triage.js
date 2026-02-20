@@ -79,6 +79,9 @@ function run() {
       let currentYear = now.getFullYear();
       let year = getYear(now);
 
+      // Display links for other years - doesn't depend on triage data
+      displayYearFooter(currentYear);
+
       // Global that points to the buckets data for the display year.
       BugQueries = TriageData[year].data;
 
@@ -90,9 +93,6 @@ function run() {
 
       // Add engineer names, bucket dates, and grayed out '?' buckets.
       populateBuckets(year, count);
-
-      // Display links for other years and the shedule
-      displayYearFooter(currentYear, BugQueries);
 
       // Make a single query for all bugs for both lists.
       loadBugListDetail();
@@ -372,22 +372,29 @@ function displayTitle(year, count) {
 }
 
 
-function displayYearFooter(currentYear, icsBugQueries) {
-  var footer = "<div id=\'footer\' class=\'footer\'>";
-  var nextYear = currentYear + 1;
+function displayYearFooter(currentYear) {
+  const team = getTeam();
+  const nextYear = currentYear + 1;
+  const endYear = 2025;
+  const $footer = $("#footer").empty();
+
+  const makeLink = (year) => {
+    const $a = $("<a>").attr("href", `?year=${year}&team=${team}`).text(year);
+    if (year === currentYear) {
+      $a.addClass("current-year");
+    }
+    return $a;
+  };
 
   // The future schedule
-  footer += "<a href=\'?year=" + nextYear + "&team=" + getTeam() + "\'>" + nextYear + "</a> | ";
+  $footer.append(makeLink(nextYear)).append(" | ");
 
-  let endYear = 2023;
-  for (var year = currentYear; year >= endYear; year--) {
-    footer += "<a href=\"?year=" + year + "&team=" + getTeam() + "\">" + year + "</a>";
-    if (year != endYear) {
-      footer += ' | ';
+  for (let year = currentYear; year >= endYear; year--) {
+    $footer.append(makeLink(year));
+    if (year !== endYear) {
+      $footer.append(" | ");
     }
   }
-  footer += "</div>";
-  $("#body").append(footer);
 }
 
 // Progress for queries

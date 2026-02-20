@@ -136,6 +136,11 @@ a:hover {
   padding-right: 3vmin;
 }
 
+.footer a.current-year {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 /* Toolbar button controls */
 
 .command-button-container {
