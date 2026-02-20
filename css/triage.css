@@ -119,12 +119,9 @@ a:hover {
 }
 
 .footer {
-  position: fixed;
-  bottom: 0px;
   width: 100%;
-  left: 0px;
-  height: 4vh;
-  padding-top: 2vh;
+  margin-top: 1vh;
+  padding: 1vh 0;
   font-size: 2vmin;
   text-align: center;
   background-color: #FF9500;
