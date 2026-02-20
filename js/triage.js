@@ -341,7 +341,7 @@ function insertEmptyBugLists(year, count) {
 function updateBugList(divId, divIndex, totalBugs, searchUrl) {
   let html = '';
   if (totalBugs == 0) {
-    html = "<div class='data'><a target='_buglist' href='" + searchUrl + "'>&nbsp;</a></div>";
+    html = "<div class='data greyedout'><a target='_buglist' href='" + searchUrl + "'>&bull;</a></div>";
     $("#data" + divIndex).replaceWith(html);
     return;
   }
