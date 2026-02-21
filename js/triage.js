@@ -336,7 +336,7 @@ function updateBugList(divId, divIndex, totalBugs, searchUrl) {
   let $sub = $data.find('.sub');
 
   if (totalBugs == 0) {
-    $link.text('\u2022').addClass('grayed-dot');
+    $link.text('\u2022').addClass('grayed-dot').attr('href', searchUrl);
     // keep gray-text, leave .sub hidden
   } else {
     $link.text(totalBugs).attr('href', searchUrl);
