@@ -412,10 +412,10 @@ function cb_closeProgress() {
 
 function onSettingsOpened() {
   $("#buglists").css('opacity', '0.5');
-  $("#announcement").css('opacity', '0.5');
+  $(".header").css('opacity', '0.5');
 }
 
 function onSettingsClosed() {
   $("#buglists").css('opacity', '1.0');
-  $("#announcement").css('opacity', '1.0');
+  $(".header").css('opacity', '1.0');
 }

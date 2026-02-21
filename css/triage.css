@@ -18,16 +18,23 @@ a:hover {
 }
 
 .header {
-  display: block;
+  display: flex;
+  align-items: center;
   margin: 0px;
-  height: 110px;
-  text-align: center;
-  font-size: 2vmin;
+  padding: 0 16px;
   background-color: #FF9500;
+  font-size: 2vmin;
 }
 
 #title-image {
   width: 75px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+#title {
+  flex: 1;
+  text-align: center;
 }
 
 .title-light {
@@ -43,14 +50,12 @@ a:hover {
 }
 
 .announcement {
-  font-size: 1.5vmin;
-  margin: 10px;
-  padding: 10px;
-  border: 3px solid #FF9500;
-  text-align: center;
-  background-color: #FFFFFF;
-  opacity: 90%;
-  border-radius: 3px;
+  flex: 2;
+  font-size: 1.3vmin;
+  padding: 8px 12px;
+  text-align: left;
+  background-color: transparent;
+  border: none;
 }
 
 .announcement a {
@@ -71,6 +76,7 @@ a:hover {
   grid-template-columns: repeat(7, 14%);
   grid-gap: 2px;
   text-align: center;
+  justify-content: center;
 }
 
 /* individual bucket divs */
@@ -144,6 +150,7 @@ a:hover {
 .command-button-container {
   padding-left: 2vmin;
   padding-right: 2vmin;
+  margin-top: 6px;
 }
 
 .command-button:disabled {
