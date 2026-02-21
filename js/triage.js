@@ -292,8 +292,8 @@ function populateBuckets(year, count) {
     let isFuture = !(now > startDate);
 
     let $bucket = $('.dev-bug-list').eq(i);
-    $bucket.find('.who').text(query.who).toggleClass('greyedout', isFuture);
-    $bucket.find('.date').text('(' + fromStr + ' - ' + toStr + ')').toggleClass('greyedout', isFuture);
+    $bucket.find('.who').text(query.who).toggleClass('gray-text', isFuture);
+    $bucket.find('.date').text('(' + fromStr + ' - ' + toStr + ')').toggleClass('gray-text', isFuture);
   }
 }
 
@@ -308,7 +308,7 @@ function insertEmptyBugLists(year, count) {
     let $dataLink = $('<a>').attr('target', '_buglist').attr('href', '');
     let $dataSub = $('<div>').addClass('sub').hide()
       .append($('<abbr>').attr('title', "Bug(s) in Bugzilla with no `Severity` set").text('B'));
-    let $data = $('<div>').addClass('data greyedout').attr('id', 'data' + i)
+    let $data = $('<div>').addClass('data gray-text').attr('id', 'data' + i)
       .append($dataLink)
       .append($dataSub);
 
@@ -336,11 +336,11 @@ function updateBugList(divId, divIndex, totalBugs, searchUrl) {
   let $sub = $data.find('.sub');
 
   if (totalBugs == 0) {
-    $link.text('\u2022');
-    // keep greyedout, leave .sub hidden
+    $link.text('\u2022').addClass('grayed-dot');
+    // keep gray-text, leave .sub hidden
   } else {
     $link.text(totalBugs).attr('href', searchUrl);
-    $data.removeClass('greyedout');
+    $data.removeClass('gray-text');
     $sub.show();
   }
 }

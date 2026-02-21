@@ -24,6 +24,7 @@ a:hover {
   padding: 0 16px;
   background-color: #FF9500;
   font-size: 2vmin;
+  border-radius: 2px;
 }
 
 #title-image {
@@ -110,8 +111,12 @@ a:hover {
   color: #FF9500;
 }
 
-.greyedout {
+.gray-text {
   color: #bcbcbc;
+}
+
+.grayed-dot {
+  color: #eaeaea;
 }
 
 .dev-bug-list .sub {
@@ -132,6 +137,7 @@ a:hover {
   font-size: 2vmin;
   text-align: center;
   background-color: #FF9500;
+  border-radius: 2px;
 }
 
 .footer a {
@@ -151,6 +157,8 @@ a:hover {
   padding-left: 2vmin;
   padding-right: 2vmin;
   margin-top: 6px;
+  display: flex;
+  align-items: center;
 }
 
 .command-button:disabled {
@@ -170,19 +178,16 @@ a:hover {
 .command-button {
   padding: 5px;
   margin-left: 10px;
-  float: right;
 }
 
 .button-separator {
-  display: inline-block;
-  float: right;
-  padding: 10px;
+  display: none;
 }
 
 .settings-button-container {
   padding: 0px;
   margin: 0px;
-  float: right;
+  margin-left: 10px;
 }
 
 .alert-icon {
