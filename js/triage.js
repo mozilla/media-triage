@@ -103,8 +103,7 @@ function run() {
 
 function refreshList(event) {
   $("#errors").empty();
-  $("#buglists").empty();
-  $("#buglists").append("<div id='content'></div>");
+  $(".dev-bug-list").remove();
   run();
 }
 
@@ -277,7 +276,6 @@ function populateBuckets(year, count) {
     return;
   }
 
-  // Adds div placeholders for bucket entries. 
   insertEmptyBugLists(year, count);
 
   for (let i = 0; i < BugQueries.length; i++) {
@@ -289,40 +287,50 @@ function populateBuckets(year, count) {
 
     let dfrom = query.from.split('-');
     let dto = query.to.split('-');
-    let id = year + "-" + i;
+
+    let fromStr = MONTHS[dfrom[1]-1] + " " + dfrom[2];
+    let toStr = MONTHS[dto[1]-1] + " " + dto[2];
 
     // Gray future buckets
     let now = new Date();
-    let endDate = new Date(dfrom[0], parseInt(dfrom[1])-1, dfrom[2], 0, 0, 0, 0);
-    let cssTag = 'greyedout';
-    if (now > endDate) {
-      cssTag = '';
-    }
+    let startDate = new Date(dfrom[0], parseInt(dfrom[1])-1, dfrom[2], 0, 0, 0, 0);
+    let isFuture = !(now > startDate);
 
-    let markup = "<div class='dev-bug-list'><div class='who " + cssTag + "'>"
-      + query.who
-      + "</div>"
-      + "<div class='date " + cssTag + "'>("
-      + MONTHS[dfrom[1]-1] + " " + dfrom[2] + " - "
-      + MONTHS[dto[1]-1] + " " + dto[2] + ")</div>"
-      + "<div id='data" + i + "'" + " class='data greyedout'>?</div>"
-      + "<div id='ubdata" + i + "'" + " class='data greyedout'>?</div>"
-      + "</div>";
-    // This id was generated in insertEmptyBugLists
-    $("#reportDiv" + id).replaceWith(markup);
+    let $bucket = $('.dev-bug-list').eq(i);
+    $bucket.find('.who').text(query.who).toggleClass('greyedout', isFuture);
+    $bucket.find('.date').text('(' + fromStr + ' - ' + toStr + ')').toggleClass('greyedout', isFuture);
   }
 }
 
 function insertEmptyBugLists(year, count) {
-  let content = "";
+  if (!BugQueries) {
+    return;
+  }
 
-  if (BugQueries) {
-    for (let i = 0; i < count; i++) {
-      let sfrom = BugQueries[i].from.split('-');
-      let from = new Date(Date.UTC(sfrom[0], parseInt(sfrom[1])-1, sfrom[2], 0, 0, 0, 0));
-      content += "<div class='dev-bug-list' id='reportDiv" + year + "-" + i + "'></div>";
-    }
-    $("#content").replaceWith(content);
+  $("#content").remove();
+
+  for (let i = 0; i < count; i++) {
+    let $dataLink = $('<a>').attr('target', '_buglist').attr('href', '');
+    let $dataSub = $('<div>').addClass('sub').hide()
+      .append($('<abbr>').attr('title', "Bug(s) in Bugzilla with no `Severity` set").text('B'));
+    let $data = $('<div>').addClass('data greyedout').attr('id', 'data' + i)
+      .append($dataLink)
+      .append($dataSub);
+
+    let $ubdataLink = $('<a>').attr('target', '_buglist').attr('href', '');
+    let $ubdataSub = $('<div>').addClass('sub')
+      .append($('<abbr>').attr('title', "UpdateBot bug(s) in Bugzilla with no `Severity` set").text('UB'));
+    let $ubdata = $('<div>').addClass('ubdata').attr('id', 'ubdata' + i).hide()
+      .append($ubdataLink)
+      .append($ubdataSub);
+
+    let $div = $('<div>').addClass('dev-bug-list')
+      .append($('<div>').addClass('who'))
+      .append($('<div>').addClass('date'))
+      .append($data)
+      .append($ubdata);
+
+    $div.insertBefore('#errors');
   }
 }
 
@@ -339,26 +347,29 @@ function insertEmptyBugLists(year, count) {
 
 // bug list
 function updateBugList(divId, divIndex, totalBugs, searchUrl) {
-  let html = '';
-  if (totalBugs == 0) {
-    html = "<div class='data greyedout'><a target='_buglist' href='" + searchUrl + "'>&bull;</a></div>";
-    $("#data" + divIndex).replaceWith(html);
-    return;
-  }
+  let $data = $('#data' + divIndex);
+  let $link = $data.find('a');
+  let $sub = $data.find('.sub');
 
-  html = "<div class='data'><a target='_buglist' href='" + searchUrl + "'>" + totalBugs + "</a><div class='data sub'><abbr title=\"Bug(s) in Bugzilla with no `Severity` set\">B</abbr></div></div>";
-  $("#" + divId + divIndex).replaceWith(html);
+  if (totalBugs == 0) {
+    $link.text('\u2022');
+    // keep greyedout, leave .sub hidden
+  } else {
+    $link.text(totalBugs).attr('href', searchUrl);
+    $data.removeClass('greyedout');
+    $sub.show();
+  }
 }
 
 // updatebot list
 function updateBotList(divId, divIndex, totalBugs, searchUrl) {
   if (totalBugs == 0) {
-    $("#ubdata" + divIndex).replaceWith("");
-    return;
+    return; // leave element hidden
   }
 
-  $("#ubdata" + divIndex).replaceWith("<div class='ubdata'><a target='_buglist' href=\"" + searchUrl
-                                  + "\">" + totalBugs + "</a><div class='updata sub'><abbr title=\"UpdateBot bug(s) in Bugzilla with no `Severity` set\">UB</abbr></div></div>" );
+  let $ubdata = $('#ubdata' + divIndex);
+  $ubdata.find('a').text(totalBugs).attr('href', searchUrl);
+  $ubdata.show();
 }
 
 function displayTitle(year, count) {

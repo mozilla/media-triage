@@ -95,6 +95,7 @@ a:hover {
 .dev-bug-list .data {
   font-size: 3vw;
   display: inline-block;
+  min-height: 1.2em;
 }
 
 .dev-bug-list .ubdata {
