@@ -6,6 +6,9 @@
 body {
   margin: 0px;
   font-family: Moz;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -21,21 +24,21 @@ a:hover {
   display: flex;
   align-items: center;
   margin: 0px;
-  padding: 0 16px;
+  padding: 8px 16px;
   background-color: #FF9500;
   font-size: 2vmin;
   border-radius: 2px;
 }
 
 #title-image {
-  width: 75px;
+  width: 60px;
   margin-right: 12px;
   flex-shrink: 0;
 }
 
 #title {
-  flex: 1;
   text-align: center;
+  padding-right: 5vw;
 }
 
 .title-light {
@@ -72,7 +75,7 @@ a:hover {
 }
 
 #buglists {
-  height: 100%;
+  flex: 1;
   display: grid;
   grid-template-columns: repeat(7, 14%);
   grid-gap: 2px;

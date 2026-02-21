@@ -75,7 +75,7 @@ function run() {
       let year = getYear(now);
 
       // Display links for other years - doesn't depend on triage data
-      displayYearFooter(currentYear);
+      displayYearFooter(currentYear, parseInt(year, 10));
 
       // Global that points to the buckets data for the display year.
       BugQueries = TriageData[year].data;
@@ -367,7 +367,7 @@ function displayTitle(year, count) {
 }
 
 
-function displayYearFooter(currentYear) {
+function displayYearFooter(currentYear, selectedYear) {
   const team = getTeam();
   const nextYear = currentYear + 1;
   const endYear = 2025;
@@ -375,7 +375,7 @@ function displayYearFooter(currentYear) {
 
   const makeLink = (year) => {
     const $a = $("<a>").attr("href", `?year=${year}&team=${team}`).text(year);
-    if (year === currentYear) {
+    if (year === selectedYear) {
       $a.addClass("current-year");
     }
     return $a;
