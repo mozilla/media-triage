@@ -17,11 +17,6 @@ var TotalQueries = 0;
 // Not worth chasing toLocaleDateString etc. compatibility
 var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-/*
-  TODO:
-     * additional settings options
-*/
-
 $(document).ready(function () {
   if (getTeam() == undefined) {
     window.location.href = window.location.href + "?year=2025&team=media"
@@ -333,17 +328,6 @@ function insertEmptyBugLists(year, count) {
     $div.insertBefore('#errors');
   }
 }
-
-/*
-  <div id="buglists" style="opacity: 1;">
-      <div class="dev-bug-list">
-        <div class="who">Kelsey Gilbert</div>
-        <div class="date">(Dec 30 - Jan 6)</div>
-        <div class="data"><a target="_buglist" href="https://bug...">1</a><div class="data sub">B</div></div>
-      </div>
-      ...
-  </div>
-*/
 
 // bug list
 function updateBugList(divId, divIndex, totalBugs, searchUrl) {
