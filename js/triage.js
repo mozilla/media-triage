@@ -299,7 +299,7 @@ function populateBuckets(year, count) {
       cssTag = '';
     }
 
-    let markup = "<div class='bugcount'><div class='who " + cssTag + "'>"
+    let markup = "<div class='dev-bug-list'><div class='who " + cssTag + "'>"
       + query.who
       + "</div>"
       + "<div class='date " + cssTag + "'>("
@@ -320,7 +320,7 @@ function insertEmptyBugLists(year, count) {
     for (let i = 0; i < count; i++) {
       let sfrom = BugQueries[i].from.split('-');
       let from = new Date(Date.UTC(sfrom[0], parseInt(sfrom[1])-1, sfrom[2], 0, 0, 0, 0));
-      content += "<div class='bugcount' id='reportDiv" + year + "-" + i + "'></div>";
+      content += "<div class='dev-bug-list' id='reportDiv" + year + "-" + i + "'></div>";
     }
     $("#content").replaceWith(content);
   }
@@ -328,7 +328,7 @@ function insertEmptyBugLists(year, count) {
 
 /*
   <div id="buglists" style="opacity: 1;">
-      <div class="bugcount">
+      <div class="dev-bug-list">
         <div class="who">Kelsey Gilbert</div>
         <div class="date">(Dec 30 - Jan 6)</div>
         <div class="data"><a target="_buglist" href="https://bug...">1</a><div class="data sub">B</div></div>

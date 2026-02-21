@@ -74,30 +74,30 @@ a:hover {
 }
 
 /* individual bucket divs */
-.bugcount {
+.dev-bug-list {
   border: 1px solid #D4DDE4;
   border-radius: 4px;
   text-align: center;
 }
 
 /* bucket names */
-.bugcount .who {
+.dev-bug-list .who {
   font-size: 1.3vw;
   display: inline-block;
 }
 
 /* bucket dates */
-.bugcount .date {
+.dev-bug-list .date {
   font-size: 0.9vw;
   display: block;
 }
 
-.bugcount .data {
+.dev-bug-list .data {
   font-size: 3vw;
   display: inline-block;
 }
 
-.bugcount .ubdata {
+.dev-bug-list .ubdata {
   font-size: 3vw;
   display: inline-block;
   color: #FF9500;
@@ -107,7 +107,7 @@ a:hover {
   color: #bcbcbc;
 }
 
-.bugcount .sub {
+.dev-bug-list .sub {
   font-size: 1vw;
   display: inline-block;
   color: #000000;
