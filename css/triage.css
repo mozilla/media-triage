@@ -52,7 +52,20 @@ a:hover {
 }
 
 .settings-button-container {
+  position: relative;
   display: inline-block;
+  margin-left: 10px;
+}
+
+.settings-button-container.alert::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: red;
+  border-radius: 50%;
 }
 
 .announcement {
@@ -207,20 +220,6 @@ a:hover {
   display: none;
 }
 
-.settings-button-container {
-  padding: 0px;
-  margin: 0px;
-  margin-left: 10px;
-}
-
-.alert-icon {
-  position: absolute;
-  visibility: hidden;
-  width: 10px;
-  height: 10px;
-  margin-left: 65px;
-  margin-top: -2px;
-}
 
 /* Setting panel container */
 #prompt-query-account {

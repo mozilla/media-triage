@@ -53,11 +53,8 @@ function getTeam() {
 
 function updateApiKeyIcon() {
   let key = getAPIKeyFromStorage();
-  if (key == null || !key.length) {
-    document.getElementById('alert-icon').style.visibility = 'visible';
-  } else {
-    document.getElementById('alert-icon').style.visibility = 'hidden';
-  }
+  let container = document.getElementById('settings-button-container');
+  container.classList.toggle('alert', key == null || !key.length);
 }
 
 /*
@@ -464,6 +461,7 @@ function loadSettingsInternal(jsonConfig) {
     TriageConfig.useSameTarget = true;
     TriageConfig.listConfig.filter_mynis = false;
     TriageConfig.listConfig.filter_allnis = false;
+    updateApiKeyIcon();
     return;
   }
 
@@ -481,6 +479,7 @@ function loadSettingsInternal(jsonConfig) {
   TriageConfig.listConfig.filter_allnis = getFromStorage("filter_allnis") == (null || 'false') ? false : true;
 
   console.log('config:', TriageConfig);
+  updateApiKeyIcon();
 }
 
 function openSettingsPanel() {
