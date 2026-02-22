@@ -143,8 +143,34 @@ function dateToBz(date) {
 }
 
 /*
+ * Expands one base VEVENT into all recurring occurrences up to cutoffDate,
+ * using the INTERVAL from its RRULE (FREQ=WEEKLY).
+ */
+function expandRRULEEvent(ev, cutoffDate) {
+  let occurrences = [];
+  let rruleStr = (typeof ev.rrule === 'object') ? ev.rrule.val : (ev.rrule || '');
+
+  // Parse INTERVAL from RRULE (e.g. "FREQ=WEEKLY;WKST=SU;INTERVAL=9;BYDAY=SA")
+  let intervalMatch = rruleStr.match(/INTERVAL=(\d+)/i);
+  let interval = intervalMatch ? parseInt(intervalMatch[1], 10) : 1;
+  let stepMs = interval * 7 * 24 * 60 * 60 * 1000; // interval weeks in ms
+  let duration = ev.end - ev.start; // preserve 7-day span
+
+  let current = new Date(ev.start);
+  while (current <= cutoffDate) {
+    let occ = Object.assign({}, ev, {
+      start: new Date(current),
+      end:   new Date(current.getTime() + duration)
+    });
+    occurrences.push(occ);
+    current = new Date(current.getTime() + stepMs);
+  }
+  return occurrences;
+}
+
+/*
  * Returns a data structure containing all of the ics entries,
- * names, dates, and some general stats in the root object. 
+ * names, dates, and some general stats in the root object.
  */
 function parseICSData(icsdata) {
   let triageData = {};
@@ -156,17 +182,24 @@ function parseICSData(icsdata) {
 
   let maxDate = null, minDate = null;
 
+  // Build flat list of events to process, expanding any that have an RRULE
+  let cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() + 3); // expand 3 years forward
+
+  let eventsToProcess = [];
   for (let k in ics) {
-    if (!ics.hasOwnProperty(k)) {
-      console.log('no Own Property', k)
+    if (!ics.hasOwnProperty(k)) continue;
+    if (ics[k].type !== 'VEVENT') continue;
+    let ev = ics[k];
+    if (ev.rrule) {
+      eventsToProcess = eventsToProcess.concat(expandRRULEEvent(ev, cutoff));
+    } else {
+      eventsToProcess.push(ev);
     }
+  }
 
-    if (ics[k].type != 'VEVENT') {
-      console.log('Not a VEVENT', ics[k])
-      continue;
-    }
-
-    var ev = ics[k];
+  for (let i = 0; i < eventsToProcess.length; i++) {
+    var ev = eventsToProcess[i];
 
     //console.log(ev.summary, ev.location, ev.start.getDate(), MONTHS[ev.start.getMonth()], ev.start.getFullYear());
 
@@ -206,6 +239,7 @@ function parseICSData(icsdata) {
     who = who.replace('[Incoming Triage] ', '');
     who = who.replace('WebRTC Triage', '');
     who = who.replace('Media Triage', '');
+    who = who.trim();
 
     //console.log('parseICS event:', '"' + who + '"', startDate, endDate, notAfterBz, year, endyear);
 
