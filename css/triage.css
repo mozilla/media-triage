@@ -49,6 +49,9 @@ a:hover {
 
 .team-title {
   display: none;
+  color: #FFFFFF;
+  font-size: 2.5vmin;
+  font-weight: normal;
 }
 
 .settings-button-container {
@@ -78,7 +81,7 @@ a:hover {
 }
 
 .announcement a {
-  color: dodgerblue;
+  color: #FFFFFF;
   text-decoration: underline;
 }
 

@@ -382,13 +382,10 @@ function displayYearFooter(currentYear, selectedYear) {
   };
 
   // The future schedule
-  $footer.append(makeLink(nextYear)).append(" | ");
+  $footer.append(makeLink(nextYear));
 
   for (let year = currentYear; year >= endYear; year--) {
     $footer.append(makeLink(year));
-    if (year !== endYear) {
-      $footer.append(" | ");
-    }
   }
 }
 
