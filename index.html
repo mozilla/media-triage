@@ -55,49 +55,55 @@
 
   <!-- dialog: query for a bugzilla account -->
   <dialog id="prompt-query-account">
-    <div class="prompt-buttons-form">
-      <form method="dialog">
+    <form method="dialog">
+      <div class="dialog-header">
+        <h2 class="dialog-title">Settings</h2>
+        <button type="submit" value="cancel" class="dialog-close-btn" aria-label="Close">&#x2715;</button>
+      </div>
 
+      <div class="dialog-body">
         <div class="settings-container">
+
           <div class="settings-header">
             <div class="settings-label-title">Bugzilla Access</div>
           </div>
-          <div class="settings-col1">
+          <div class="settings-full-row">
+            <label for="api-key">API Key</label>
             <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+            <p class="settings-help-text">
+              Enter a Bugzilla account API key for restricted bug access. API keys are used to
+              authenticate WebService API calls and are managed by you in Bugzilla. To create an
+              API key for this application, visit your <a href="https://bugzilla.mozilla.org/userprefs.cgi?tab=apikey">Bugzilla API Key Administration</a> page.
+              <a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer">(more info)</a>
+            </p>
           </div>
-          <div class="settings-col2">
-            Enter a Bugzilla account API key for restricted bug access. API keys are used to
-            authenticate WebService API calls and are managed by you in Bugzilla. To create an
-            API key for this application, visit your <a href="https://bugzilla.mozilla.org/userprefs.cgi?tab=apikey">Bugzilla API Key Administration</a> page.
-            <a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer">(more info)</a>
-          </div>
+
           <div class="settings-header">
             <div class="settings-label-title">General Options</div>
           </div>
-          <div class="settings-col1">
+          <div class="settings-option-row">
             <input type="checkbox" id="option-targets" name="target" />
+            <label for="option-targets">
+              Re-use the same target tab for bug links.
+              <small>On by default</small>
+            </label>
           </div>
-          <div class="settings-col2">
-            <div class="settings-label">
-              Re-use the same target tab for bug links. (default)
-            </div>
-          </div>
-          <div class="settings-col1">
+          <div class="settings-option-row">
             <input type="checkbox" id="option-save" name="save" />
+            <label for="option-save">
+              Persist these settings, including my Bugzilla API key in local storage.
+              <small>On by default</small>
+            </label>
           </div>
-          <div class="settings-col2">
-            <div class="settings-label">
-              Persist these settings, including my Bugzilla API key in local storage. (default)
-            </div>
-          </div>
-        </div>
 
-        <div class="nowrap">
-          <button id="btn-confirm" value="confirm">Confirm</button>
-          <button id="btn-cancel" autofocus value="cancel">Cancel</button>
         </div>
-      </form>
-    </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
+        <button id="btn-confirm" value="confirm">Confirm</button>
+      </div>
+    </form>
   </dialog>
 
   <footer id="footer" class="footer"></footer>
