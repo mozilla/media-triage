@@ -92,7 +92,7 @@ a:hover {
 #buglists {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(7, 14%);
+  grid-template-columns: repeat(7, 1fr);
   grid-gap: 10px;
   text-align: center;
   justify-content: center;
