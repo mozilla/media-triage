@@ -396,7 +396,7 @@ function displayYearFooter(currentYear, selectedYear) {
 function cb_initProgress() {
   document.getElementById('progressmeter').max = TotalQueries;
   document.getElementById('progressmeter').value = 0;
-  document.getElementById('progress').style.visibility = 'visible';
+  document.getElementById('progress').style.display = 'block';
   console.log('TotalQueries', TotalQueries);
 }
 
@@ -407,7 +407,7 @@ function cb_stepdownProgress() {
 
 function cb_closeProgress() {
   if (document.getElementById('progressmeter').value >= TotalQueries)
-    document.getElementById('progress').style.visibility = 'hidden';
+    document.getElementById('progress').style.display = 'none';
 }
 
 function onSettingsOpened() {
