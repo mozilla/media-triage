@@ -369,8 +369,6 @@ function displayTitle(year, count) {
 
 function displayYearFooter(currentYear, selectedYear) {
   const team = getTeam();
-  const nextYear = currentYear + 1;
-  const endYear = 2025;
   const $footer = $("#footer").empty();
 
   const makeLink = (year) => {
@@ -381,12 +379,9 @@ function displayYearFooter(currentYear, selectedYear) {
     return $a;
   };
 
-  // The future schedule
-  $footer.append(makeLink(nextYear));
-
-  for (let year = currentYear; year >= endYear; year--) {
+  [currentYear + 1, currentYear, currentYear - 1].forEach((year) => {
     $footer.append(makeLink(year));
-  }
+  });
 }
 
 // Progress for queries
