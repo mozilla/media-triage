@@ -111,9 +111,10 @@ function loadBugListDetail() {
 
   // Fire off a single bugzilla request per report
   let url = TriageConfig.jsonConfig.BUGZILLA_REST_URL + TriageData['url'];
-  let key = getAPIKeyFromStorage(); 
+  let key = getAPIKeyFromStorage();
+  let headers = {};
   if (key != null && key.length) {
-    url += "&api_key=" + key;
+    headers['X-Bugzilla-api-key'] = key;
   }
 
   // Limit what data we retreive for better performance.
@@ -124,6 +125,7 @@ function loadBugListDetail() {
     crossDomain:true,
     dataType: 'json',
     ifModified: true,
+    headers: headers,
     success: function(data, status) {
       if (status === 'success') {
         // Global
@@ -149,9 +151,6 @@ function loadBugListDetail() {
 
   // Fire off a bugzilla request
   url = TriageConfig.jsonConfig.BUGZILLA_REST_URL + TriageData['uburl'];
-  if (key != null && key.length) {
-    url += "&api_key=" + key;
-  }
 
   // Limit what data we retreive for better bugzilla query performance.
   url += "&" + TriageConfig.jsonConfig.include_fields;
@@ -163,6 +162,7 @@ function loadBugListDetail() {
     crossDomain:true,
     dataType: 'json',
     ifModified: true,
+    headers: headers,
     success: function(data, status) {
       if (status === 'success') {
         UBData = data;
