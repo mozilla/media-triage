@@ -58,7 +58,6 @@ function run() {
   $.ajax({
     url: icsurl,
     crossDomain:true,
-    crossOrigin: true,
     error: function (a, b, c) {
       console.log("ics file load error: " + c);
     },
