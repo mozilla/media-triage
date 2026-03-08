@@ -101,6 +101,15 @@ function refreshList(event) {
   run();
 }
 
+function feelingLucky() {
+  if (!BugData || !BugData.bugs || BugData.bugs.length === 0) {
+    return;
+  }
+  let bug = BugData.bugs[Math.floor(Math.random() * BugData.bugs.length)];
+  let url = 'https://' + TriageConfig.jsonConfig.bugzilla_domain + '/show_bug.cgi?id=' + bug.id;
+  window.open(url, '_buglist');
+}
+
 function loadBugListDetail() {
   if (!BugQueries) {
     return;

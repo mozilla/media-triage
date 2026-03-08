@@ -57,7 +57,7 @@ a:hover {
 .settings-button-container {
   position: relative;
   display: inline-block;
-  margin-left: 10px;
+  margin-left: auto;
 }
 
 .settings-button-container.alert::after {
@@ -221,6 +221,14 @@ a:hover {
 
 .command-button:hover:not(:disabled) {
   background-color: #f0f0f0;
+}
+
+.lucky-button {
+  background-color: #add8e6;
+}
+
+.lucky-button:hover:not(:disabled) {
+  background-color: #90c8dc;
 }
 
 .button-separator {
