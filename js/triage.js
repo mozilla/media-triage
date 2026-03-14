@@ -103,7 +103,24 @@ function run() {
 function refreshList(event) {
   $("#errors").empty();
   $(".dev-bug-list").remove();
+  $("#stats").empty();
+  BugData = null;
+  UBData = null;
   run();
+}
+
+function updateStats() {
+  let bugTotal = BugData ? BugData.bugs.length : 0;
+  let ubTotal  = UBData  ? UBData.bugs.length  : 0;
+  let bugUrl = TriageConfig.jsonConfig.BUGZILLA_URL + TriageData['url'];
+  let ubUrl  = TriageConfig.jsonConfig.BUGZILLA_URL + TriageData['uburl'];
+
+  let $stats = $('#stats').empty();
+  $stats.append($('<a>').attr({ href: bugUrl, target: '_buglist' })
+                        .text(bugTotal + ' open bug' + (bugTotal !== 1 ? 's' : '')));
+  $stats.append(' \u2022 ');
+  $stats.append($('<a>').addClass('ub-stat').attr({ href: ubUrl, target: '_buglist' })
+                        .text(ubTotal + ' open update bot bug' + (ubTotal !== 1 ? 's' : '')));
 }
 
 function feelingLucky() {
@@ -144,6 +161,7 @@ function loadBugListDetail() {
         // Global
         BugData = data;
         displayBugLists(updateBugList, 'data', BugData);
+        updateStats();
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
@@ -180,6 +198,7 @@ function loadBugListDetail() {
       if (status === 'success') {
         UBData = data;
         displayBugLists(updateBotList, 'ubdata', UBData);
+        updateStats();
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
