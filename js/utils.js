@@ -371,14 +371,18 @@ function setupQueryURLs(displayFuture) {
   //  search_params += entry + "&";
   //});
 
+  // Compute date range for the current year's slots only
+  let yearMin = BugQueries.reduce((min, q) => q.from < min ? q.from : min, BugQueries[0].from);
+  let yearMax = BugQueries.reduce((max, q) => q.to > max ? q.to : max, BugQueries[0].to);
+
   // Bugzilla searches
   search_params = search_params.replace(/<COMPONENT>/g, components);
-  search_params = search_params.replace('<AFTER>', TriageData.min).replace('<NOT-AFTER>', TriageData.max);
+  search_params = search_params.replace('<AFTER>', yearMin).replace('<NOT-AFTER>', yearMax);
   TriageData["url"] = search_params;
 
   // Bugzilla updatebot searches
   ubsearch = ubsearch.replace(/<COMPONENT>/g, components);
-  ubsearch = ubsearch.replace(/<AFTER>/g, TriageData.min).replace(/<NOT-AFTER>/g, TriageData.max);
+  ubsearch = ubsearch.replace(/<AFTER>/g, yearMin).replace(/<NOT-AFTER>/g, yearMax);
   TriageData["uburl"] = ubsearch;
 
   // console.log(ubsearch);
