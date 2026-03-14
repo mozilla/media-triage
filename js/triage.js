@@ -11,6 +11,7 @@ var TriageData; // ICS Data
 var BugQueries; // Queries database based on ICS data. Remove Me
 var BugData; // Bug database covering all calendar dates
 var UBData; // Bug database covering all calendar dates for ubdate bot
+var DisplayedBugs = []; // Bugs currently visible on the dashboard
 var TriageConfig;
 var TotalQueries = 0;
 
@@ -88,6 +89,10 @@ function run() {
       // Add engineer names, bucket dates, and grayed out '?' buckets.
       populateBuckets(year, count);
 
+      // Reset and disable IFL until bugs are counted.
+      DisplayedBugs = [];
+      $('.lucky-button').prop('disabled', true);
+
       // Make a single query for all bugs for both lists.
       loadBugListDetail();
 
@@ -102,10 +107,10 @@ function refreshList(event) {
 }
 
 function feelingLucky() {
-  if (!BugData || !BugData.bugs || BugData.bugs.length === 0) {
+  if (!DisplayedBugs || DisplayedBugs.length === 0) {
     return;
   }
-  let bug = BugData.bugs[Math.floor(Math.random() * BugData.bugs.length)];
+  let bug = DisplayedBugs[Math.floor(Math.random() * DisplayedBugs.length)];
   let url = 'https://' + TriageConfig.jsonConfig.bugzilla_domain + '/show_bug.cgi?id=' + bug.id;
   window.open(url, '_buglist');
 }
@@ -204,6 +209,10 @@ function errorMsg(text) {
 }
 
 function displayBugLists(displayCallback, div, data) {
+  if (div === 'data') {
+    DisplayedBugs = [];
+  }
+
   for (let idx = 0; idx < BugQueries.length; idx++) {
     let query = BugQueries[idx];
     let qurl = '';
@@ -255,6 +264,9 @@ function displayBugLists(displayCallback, div, data) {
       if (creationTime.valueOf() >= from.valueOf() && creationTime.valueOf() <= to.valueOf()) { // UTC compare
         //console.log('fits:', bug.id, bug.summary, creationTime);
         count++;
+        if (div === 'data') {
+          DisplayedBugs.push(bug);
+        }
       } else {
         //console.log('no fit:', bug.id, bug.summary);
         //console.log(creationTime.valueOf(), from.valueOf(), to.valueOf())
@@ -270,6 +282,10 @@ function displayBugLists(displayCallback, div, data) {
     displayCallback(div, idx, query.bugcount,
                     TriageConfig.jsonConfig.BUGZILLA_URL + qurl);
 
+  }
+
+  if (div === 'data') {
+    $('.lucky-button').prop('disabled', DisplayedBugs.length === 0);
   }
 }
 
