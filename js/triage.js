@@ -253,6 +253,7 @@ function displayBugLists(displayCallback, div, data) {
 
     // Calculate Bug Counts
     let count = 0;
+    let seccount = 0;
 
     // Both to and from will be stored internally as UTC but will get converted to local
     // time when in use, so be careful.
@@ -282,9 +283,16 @@ function displayBugLists(displayCallback, div, data) {
       //console.log('bug creation time:' + bug.creation_time);
       if (creationTime.valueOf() >= from.valueOf() && creationTime.valueOf() <= to.valueOf()) { // UTC compare
         //console.log('fits:', bug.id, bug.summary, creationTime);
-        count++;
         if (div === 'data') {
-          DisplayedBugs.push(bug);
+          let isSecurity = bug.groups && bug.groups.some(g => (typeof g === 'string' ? g : (g.name || '')).includes('core-security'));
+          if (isSecurity) {
+            seccount++;
+          } else {
+            count++;
+            DisplayedBugs.push(bug);
+          }
+        } else {
+          count++;
         }
       } else {
         //console.log('no fit:', bug.id, bug.summary);
@@ -298,8 +306,16 @@ function displayBugLists(displayCallback, div, data) {
     let id = year + "-" + idx;
 
     // This id was generated in insertEmptyBugLists
-    displayCallback(div, idx, query.bugcount,
-                    TriageConfig.jsonConfig.BUGZILLA_URL + qurl);
+    let bugUrl = TriageConfig.jsonConfig.BUGZILLA_URL + qurl;
+    if (div === 'data') {
+      bugUrl += '&f9=bug_group&o9=notsubstring&v9=core-security';
+    }
+    displayCallback(div, idx, query.bugcount, bugUrl);
+
+    if (div === 'data') {
+      let secUrl = TriageConfig.jsonConfig.BUGZILLA_URL + qurl + '&f9=bug_group&o9=substring&v9=core-security';
+      updateSecurityList(idx, seccount, secUrl);
+    }
 
   }
 
@@ -348,6 +364,13 @@ function insertEmptyBugLists(year, count) {
   $("#content").remove();
 
   for (let i = 0; i < count; i++) {
+    let $secdataLink = $('<a>').attr('target', '_buglist').attr('href', '');
+    let $secdataSub = $('<div>').addClass('sub')
+      .append($('<abbr>').attr('title', "Security bug(s) in this triage period (core-security group)").text('S'));
+    let $secdata = $('<div>').addClass('secdata').attr('id', 'secdata' + i).hide()
+      .append($secdataLink)
+      .append($secdataSub);
+
     let $dataLink = $('<a>').attr('target', '_buglist').attr('href', '');
     let $dataSub = $('<div>').addClass('sub').hide()
       .append($('<abbr>').attr('title', "Bug(s) in Bugzilla with no `Severity` set").text('B'));
@@ -365,6 +388,7 @@ function insertEmptyBugLists(year, count) {
     let $div = $('<div>').addClass('dev-bug-list')
       .append($('<div>').addClass('who'))
       .append($('<div>').addClass('date'))
+      .append($secdata)
       .append($data)
       .append($ubdata);
 
@@ -390,13 +414,26 @@ function updateBugList(divId, divIndex, totalBugs, searchUrl) {
 
 // updatebot list
 function updateBotList(divId, divIndex, totalBugs, searchUrl) {
-  if (totalBugs == 0) {
-    return; // leave element hidden
-  }
-
   let $ubdata = $('#ubdata' + divIndex);
-  $ubdata.find('a').text(totalBugs).attr('href', searchUrl);
+  if (totalBugs == 0) {
+    $ubdata.find('a').text('\u2022').addClass('grayed-dot').attr('href', searchUrl);
+    $ubdata.find('.sub').hide();
+  } else {
+    $ubdata.find('a').text(totalBugs).attr('href', searchUrl);
+  }
   $ubdata.show();
+}
+
+// security bug list
+function updateSecurityList(divIndex, totalBugs, searchUrl) {
+  let $secdata = $('#secdata' + divIndex);
+  if (totalBugs == 0) {
+    $secdata.find('a').text('\u2022').addClass('grayed-dot').attr('href', searchUrl);
+    $secdata.find('.sub').hide();
+  } else {
+    $secdata.find('a').text(totalBugs).attr('href', searchUrl);
+  }
+  $secdata.show();
 }
 
 function displayTitle(year, count) {

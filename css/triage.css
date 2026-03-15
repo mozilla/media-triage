@@ -129,16 +129,25 @@ a:hover {
   min-height: 1.2em;
   cursor: pointer;
   transition: color 0.15s ease;
+  padding: 0 4px;
 }
 
 .dev-bug-list .data:hover {
   color: #FF9500;
 }
 
+.dev-bug-list .secdata {
+  font-size: 3vw;
+  display: inline-block;
+  color: #cc0000;
+  padding: 0 4px;
+}
+
 .dev-bug-list .ubdata {
   font-size: 3vw;
   display: inline-block;
   color: #FF9500;
+  padding: 0 4px;
 }
 
 .gray-text {
