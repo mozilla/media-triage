@@ -4,7 +4,7 @@
 
 A single-page dashboard used by Mozilla's Graphics, Media Playback, and Web Conferencing teams to track incoming Bugzilla bugs organized by weekly triage duty slots. Each engineer who is assigned a triage week sees a card on the page showing how many unreviewed bugs were filed during their slot.
 
-Triage policy - each engineer is responsible for triaging the severity of every bug in a bucket. Bugs do not cascade down to the next engineer if they do not get triaged. Engineers can use a Google calendar to update triage bucket scheduling (trade with friends, find replacements for PTO, etc.). That ICS data drives the traige schedule for the dashbaord.
+Triage policy: each engineer is responsible for triaging the severity of every bug in their bucket. Bugs do not cascade to the next engineer if left untriaged. Engineers can use a Google calendar to update triage bucket scheduling (trade with others, find replacements for PTO, etc.). Calendar ICS data drives the triage schedule for this dashboard.
 
 ---
 
@@ -63,10 +63,15 @@ One card is rendered per calendar event for the selected year. Each card shows:
 
 - **Engineer name** (from the ICS `SUMMARY`)
 - **Date range** (formatted as "Mon DD – Mon DD")
-- **Security bug count (S)** — displayed in red; counts bugs in the `core-security` Bugzilla group filed during the slot. Always shown after data loads; displayed as a grayed-out bullet (•) when zero. Links to the Bugzilla search filtered to `core-security` group bugs.
-- **General bug count** — a clickable number that opens a Bugzilla search for non-security bugs filed in that slot. Displayed as a grayed-out bullet (•) when zero. Security bugs are excluded from this count.
-- **"B" sub-indicator** — shown alongside the general bug count when bugs are present; links to Bugzilla bugs with no `Severity` set.
-- **UpdateBot count (UB)** — a separate count of bugs filed by `update-bot@bmo.tld` during that slot. Always shown after data loads; displayed as a grayed-out bullet (•) when zero.
+- **Bug counts** — three indicators appear after data loads, each showing a count for that slot:
+
+  | Indicator | Color | What it counts | When zero |
+  |---|---|---|---|
+  | *(number)* + **S** | Red | Bugs in the `core-security` Bugzilla group | Grayed-out bullet (•) |
+  | *(number)* + **B** | Default | Non-security defect bugs | Grayed-out bullet (•) |
+  | *(number)* + **UB** | Orange | Bugs filed by `update-bot@bmo.tld` | Grayed-out bullet (•) |
+
+  Each indicator is a link to the corresponding Bugzilla search.
 
 Future buckets (slots whose start date is after today) are displayed with grayed-out text.
 
