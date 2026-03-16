@@ -4,6 +4,8 @@
 
 A single-page dashboard used by Mozilla's Graphics, Media Playback, and Web Conferencing teams to track incoming Bugzilla bugs organized by weekly triage duty slots. Each engineer who is assigned a triage week sees a card on the page showing how many unreviewed bugs were filed during their slot.
 
+Triage policy - each engineer is responsible for triaging the severity of every bug in a bucket. Bugs do not cascade down to the next engineer if they do not get triaged. Engineers can use a Google calendar to update triage bucket scheduling (trade with friends, find replacements for PTO, etc.). That ICS data drives the traige schedule for the dashbaord.
+
 ---
 
 ## Teams
@@ -51,6 +53,8 @@ Displays the Firefox logo, the team name and year, and a persistent announcement
 
 - **Team dropdown** — switches between Media Playback, Web Conferencing, and Graphics. Changing the selection reloads the page with the new `team` URL parameter.
 - **Refresh button** — re-fetches the ICS file and Bugzilla data without a full page reload.
+- **I'm Feeling Lucky button** — opens a randomly selected bug from the currently visible (non-security) general bug list. Disabled until bug data has loaded.
+- **Stats display** — after data loads, shows the total count of open bugs and open UpdateBot bugs for the year, each as a clickable link to the full Bugzilla query.
 - **Settings button** — opens the settings dialog. The button shows a visual alert indicator when no Bugzilla API key is configured.
 
 ### Triage bucket cards
@@ -59,9 +63,10 @@ One card is rendered per calendar event for the selected year. Each card shows:
 
 - **Engineer name** (from the ICS `SUMMARY`)
 - **Date range** (formatted as "Mon DD – Mon DD")
-- **Bug count** — a clickable number that opens a Bugzilla search filtered to bugs filed in that slot. Displayed as a grayed-out bullet (•) when the count is zero.
-- **"B" sub-indicator** — shown alongside the bug count when bugs are present; links to Bugzilla bugs with no `Severity` set.
-- **UpdateBot count (UB)** — a separate count of bugs filed by `update-bot@bmo.tld` during that slot, shown only when non-zero.
+- **Security bug count (S)** — displayed in red; counts bugs in the `core-security` Bugzilla group filed during the slot. Always shown after data loads; displayed as a grayed-out bullet (•) when zero. Links to the Bugzilla search filtered to `core-security` group bugs.
+- **General bug count** — a clickable number that opens a Bugzilla search for non-security bugs filed in that slot. Displayed as a grayed-out bullet (•) when zero. Security bugs are excluded from this count.
+- **"B" sub-indicator** — shown alongside the general bug count when bugs are present; links to Bugzilla bugs with no `Severity` set.
+- **UpdateBot count (UB)** — a separate count of bugs filed by `update-bot@bmo.tld` during that slot. Always shown after data loads; displayed as a grayed-out bullet (•) when zero.
 
 Future buckets (slots whose start date is after today) are displayed with grayed-out text.
 
@@ -103,7 +108,7 @@ Rather than one request per bucket, the site issues **two** requests that cover 
 
 ### Fields retrieved
 
-To minimize payload size, only the following fields are requested: `last_change_time`, `creation_time`, `summary`, `id`, `flags`, `severity`, `priority`, `assigned_to`.
+To minimize payload size, only the following fields are requested: `last_change_time`, `creation_time`, `summary`, `id`, `flags`, `severity`, `priority`, `assigned_to`, `groups`. The `groups` field is used to detect `core-security` bugs and split them into their own count.
 
 ---
 
