@@ -153,8 +153,15 @@ function expandRRULEEvent(ev, cutoffDate) {
   let stepMs = interval * 7 * 24 * 60 * 60 * 1000; // interval weeks in ms
   let duration = ev.end - ev.start; // preserve 7-day span
 
+  // Respect UNTIL if present in the RRULE (e.g. UNTIL=20241227 or UNTIL=20241227T000000Z)
+  let untilMatch = rruleStr.match(/UNTIL=(\d{8})/i);
+  let untilDate = untilMatch
+    ? new Date(untilMatch[1].slice(0,4) + '-' + untilMatch[1].slice(4,6) + '-' + untilMatch[1].slice(6,8))
+    : null;
+  let stopDate = (untilDate && untilDate < cutoffDate) ? untilDate : cutoffDate;
+
   let current = new Date(ev.start);
-  while (current <= cutoffDate) {
+  while (current <= stopDate) {
     let occ = Object.assign({}, ev, {
       start: new Date(current),
       end:   new Date(current.getTime() + duration)
