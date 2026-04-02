@@ -1,0 +1,30 @@
+name: Sync ICS Calendars
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 6am UTC daily
+  workflow_dispatch:        # allow manual trigger from the Actions tab
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch Media Playback ICS
+        run: curl -fsSL "${{ secrets.MEDIA_ICS_URL }}" -o js/media.ics
+
+      - name: Fetch Web Conferencing ICS
+        run: curl -fsSL "${{ secrets.WEBRTC_ICS_URL }}" -o js/webrtc.ics
+
+      - name: Commit updated ICS files if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet js/media.ics js/webrtc.ics || (
+            git add js/media.ics js/webrtc.ics &&
+            git commit -m "chore: sync ICS calendars" &&
+            git push
+          )
