@@ -199,14 +199,20 @@ function diffAndNotify(snapshot) {
   }
 
   if (lines.length === 0) {
+    console.log("[notify] diffAndNotify: no changes detected, skipping notification.");
     return;
   }
 
-  new Notification('Triage Dashboard Updated', {
+  console.log("[notify] Firing notification with", lines.length, "changed slot(s):");
+  lines.forEach(function(line) { console.log("[notify]  ", line); });
+
+  let n = new Notification('Triage Dashboard Updated', {
     body: lines.join('\n'),
     tag:  'triage-refresh',
     icon: 'images/triagefavicon.png'
   });
+  n.onerror = function(e) { console.log("[notify] Notification error:", e); };
+  n.onshow  = function()  { console.log("[notify] Notification displayed successfully."); };
 }
 
 // Toggle notifications on/off, requesting permission if needed.
