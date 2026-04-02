@@ -27,6 +27,17 @@ $(document).ready(function () {
     window.location.href = window.location.href + "?year=2026&team=media"
     return;
   }
+
+  // Restore notification opt-in state if the user already granted permission.
+  if ('Notification' in window && Notification.permission === 'granted') {
+    NotificationsEnabled = true;
+    let btn = document.getElementById('notify-button');
+    if (btn) {
+      btn.textContent = 'Cancel Notifications';
+      btn.classList.add('notify-active');
+    }
+  }
+
   $.getJSON('js/triage.json', function(data) {
     load(data);
   });
