@@ -15,6 +15,10 @@ var DisplayedBugs = []; // Bugs currently visible on the dashboard
 var TriageConfig;
 var TotalQueries = 0;
 
+var AutoRefreshTimer = null;        // handle for the 10-minute refresh interval
+var NotificationsEnabled = false;   // true when user has opted in to change notifications
+var BugCountSnapshot = [];          // per-slot count snapshot captured before each silent refresh
+
 // Not worth chasing toLocaleDateString etc. compatibility
 var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -96,6 +100,9 @@ function run() {
       // Make a single query for all bugs for both lists.
       loadBugListDetail();
 
+      // Start the 10-minute silent refresh cycle.
+      startAutoRefresh();
+
     }
   });
 }
@@ -107,6 +114,124 @@ function refreshList(event) {
   BugData = null;
   UBData = null;
   run();
+  // run() will call startAutoRefresh() after ICS loads, resetting the interval
+  // from zero so a manual refresh doesn't get immediately followed by an auto one.
+}
+
+function startAutoRefresh() {
+  if (AutoRefreshTimer) {
+    clearInterval(AutoRefreshTimer);
+  }
+  AutoRefreshTimer = setInterval(silentBugRefresh, 10 * 60 * 1000);
+}
+
+function silentBugRefresh() {
+  if (!BugQueries) {
+    return;
+  }
+  let snapshot = snapshotCounts();
+  loadBugListDetail(function() {
+    if (NotificationsEnabled) {
+      diffAndNotify(snapshot);
+    }
+  });
+}
+
+// Capture current per-slot counts before a silent refresh.
+function snapshotCounts() {
+  if (!BugQueries) {
+    return [];
+  }
+  return BugQueries.map(function(q) {
+    return {
+      bugcount: q.bugcount || 0,
+      seccount: q.seccount || 0,
+      ubcount:  q.ubcount  || 0,
+      who:  q.who,
+      from: q.from
+    };
+  });
+}
+
+// Compare a pre-refresh snapshot against current counts and fire a single
+// bundled notification listing every slot that changed.
+function diffAndNotify(snapshot) {
+  if (!BugQueries || !snapshot || snapshot.length === 0) {
+    return;
+  }
+
+  let lines = [];
+  for (let i = 0; i < snapshot.length && i < BugQueries.length; i++) {
+    let old = snapshot[i];
+    let cur = BugQueries[i];
+    let parts = [];
+
+    let bugDelta = (cur.bugcount || 0) - old.bugcount;
+    let secDelta = (cur.seccount || 0) - old.seccount;
+    let ubDelta  = (cur.ubcount  || 0) - old.ubcount;
+
+    if (bugDelta !== 0) {
+      parts.push((bugDelta > 0 ? '+' : '') + bugDelta + ' bug' + (Math.abs(bugDelta) !== 1 ? 's' : ''));
+    }
+    if (secDelta !== 0) {
+      parts.push((secDelta > 0 ? '+' : '') + secDelta + ' security bug' + (Math.abs(secDelta) !== 1 ? 's' : ''));
+    }
+    if (ubDelta !== 0) {
+      parts.push((ubDelta > 0 ? '+' : '') + ubDelta + ' updatebot bug' + (Math.abs(ubDelta) !== 1 ? 's' : ''));
+    }
+
+    if (parts.length > 0) {
+      let sfrom = old.from.split('-');
+      let monthStr = MONTHS[parseInt(sfrom[1], 10) - 1] + ' ' + sfrom[2];
+      lines.push(old.who + ' (' + monthStr + '): ' + parts.join(', '));
+    }
+  }
+
+  if (lines.length === 0) {
+    return;
+  }
+
+  new Notification('Triage Dashboard Updated', {
+    body: lines.join('\n'),
+    tag:  'triage-refresh',
+    icon: 'images/triagefavicon.png'
+  });
+}
+
+// Toggle notifications on/off, requesting permission if needed.
+function toggleNotifications() {
+  let btn = document.getElementById('notify-button');
+
+  if (NotificationsEnabled) {
+    NotificationsEnabled = false;
+    btn.textContent = 'Notify Me';
+    btn.classList.remove('notify-active');
+    return;
+  }
+
+  if (!('Notification' in window)) {
+    return;
+  }
+
+  if (Notification.permission === 'granted') {
+    NotificationsEnabled = true;
+    btn.textContent = 'Cancel Notifications';
+    btn.classList.add('notify-active');
+  } else if (Notification.permission === 'denied') {
+    // Can't prompt again — show a brief inline hint near the button.
+    let hint = document.getElementById('notify-hint');
+    hint.textContent = 'Notifications blocked — check browser settings.';
+    hint.style.display = 'inline';
+    setTimeout(function() { hint.style.display = 'none'; }, 4000);
+  } else {
+    Notification.requestPermission().then(function(permission) {
+      if (permission === 'granted') {
+        NotificationsEnabled = true;
+        btn.textContent = 'Cancel Notifications';
+        btn.classList.add('notify-active');
+      }
+    });
+  }
 }
 
 function updateStats() {
@@ -132,12 +257,19 @@ function feelingLucky() {
   window.open(url, '_buglist');
 }
 
-function loadBugListDetail() {
+function loadBugListDetail(onComplete) {
   if (!BugQueries) {
     return;
   }
 
   $("#errors").empty();
+
+  let pending = 2;
+  function queryDone() {
+    if (--pending === 0 && typeof onComplete === 'function') {
+      onComplete();
+    }
+  }
 
   // Fire off a single bugzilla request per report
   let url = TriageConfig.jsonConfig.BUGZILLA_REST_URL + TriageData['url'];
@@ -163,6 +295,7 @@ function loadBugListDetail() {
         displayBugLists(updateBugList, 'data', BugData);
         updateStats();
       }
+      queryDone();
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("url:", url);
@@ -174,9 +307,9 @@ function loadBugListDetail() {
         let text = info.message ? info.message : errorThrown;
         console.log("detail:", text);
         errorMsg(text);
-        return;
       } catch(e) {
       }
+      queryDone();
     }
   });
 
@@ -200,6 +333,7 @@ function loadBugListDetail() {
         displayBugLists(updateBotList, 'ubdata', UBData);
         updateStats();
       }
+      queryDone();
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("url:", url);
@@ -211,9 +345,9 @@ function loadBugListDetail() {
         let text = info.message ? info.message : errorThrown;
         console.log("detail:", text);
         errorMsg(text);
-        return;
       } catch(e) {
       }
+      queryDone();
     }
   });
 
@@ -299,7 +433,12 @@ function displayBugLists(displayCallback, div, data) {
         //console.log(creationTime.valueOf(), from.valueOf(), to.valueOf())
       }
     }
-    query.bugcount = count;
+    if (div === 'data') {
+      query.bugcount = count;
+      query.seccount = seccount;
+    } else {
+      query.ubcount = count;
+    }
 
     let now = new Date();
     let year = getYear(now);
@@ -310,7 +449,7 @@ function displayBugLists(displayCallback, div, data) {
     if (div === 'data') {
       bugUrl += '&f9=bug_group&o9=notsubstring&v9=core-security';
     }
-    displayCallback(div, idx, query.bugcount, bugUrl);
+    displayCallback(div, idx, count, bugUrl);
 
     if (div === 'data') {
       let secUrl = TriageConfig.jsonConfig.BUGZILLA_URL + qurl + '&f9=bug_group&o9=substring&v9=core-security';

@@ -251,6 +251,21 @@ a:hover {
   background-color: #90c8dc;
 }
 
+.notify-active {
+  background-color: #c8e6c9;
+  border-color: #81c784;
+}
+
+.notify-active:hover {
+  background-color: #b2dfdb;
+}
+
+.notify-hint {
+  margin-left: 8px;
+  font-size: 0.8em;
+  color: #cc0000;
+}
+
 .button-separator {
   display: none;
 }

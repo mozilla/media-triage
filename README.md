@@ -55,6 +55,7 @@ Displays the Firefox logo, the team name and year, and a persistent announcement
 - **Refresh button** — re-fetches the ICS file and Bugzilla data without a full page reload.
 - **I'm Feeling Lucky button** — opens a randomly selected bug from the currently visible (non-security) general bug list. Disabled until bug data has loaded.
 - **Stats display** — after data loads, shows the total count of open bugs and open UpdateBot bugs for the year, each as a clickable link to the full Bugzilla query.
+- **Notify Me button** — opts in to browser change notifications (see [Auto-refresh and Notifications](#auto-refresh-and-notifications) below). The button turns green and reads "Cancel Notifications" when active.
 - **Settings button** — opens the settings dialog. The button shows a visual alert indicator when no Bugzilla API key is configured.
 
 ### Triage bucket cards
@@ -114,6 +115,26 @@ Rather than one request per bucket, the site issues **two** requests that cover 
 ### Fields retrieved
 
 To minimize payload size, only the following fields are requested: `last_change_time`, `creation_time`, `summary`, `id`, `flags`, `severity`, `priority`, `assigned_to`, `groups`. The `groups` field is used to detect `core-security` bugs and split them into their own count.
+
+---
+
+## Auto-refresh and Notifications
+
+### Auto-refresh
+
+The dashboard silently re-fetches Bugzilla data every **10 minutes** without rebuilding the page. Only the bug counts (regular, security, and UpdateBot) are updated — the ICS calendar and card layout are not reloaded. The timer resets to zero whenever the **Refresh** button is used manually, so a manual refresh is never immediately followed by an automatic one.
+
+### Change notifications
+
+The **Notify Me** button opts the user in to browser notifications via the [Web Notifications API](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API). Permission is only requested in response to the button click (never on page load, per browser requirements).
+
+When enabled, each silent auto-refresh compares the new bug counts against a snapshot taken before the refresh. If any slot changed, a single bundled notification is fired:
+
+- **Title:** `Triage Dashboard Updated`
+- **Body:** one line per changed slot — engineer name, week start date, and signed deltas for each bug type (e.g. `Jim (Mar 3): +2 bugs, -1 security bug`)
+- **Tag:** fixed as `triage-refresh`, so a subsequent refresh notification replaces the previous one rather than stacking
+
+No notification is fired if counts are unchanged. If the browser has blocked notifications, a brief inline message is shown near the button instead of re-prompting.
 
 ---
 
