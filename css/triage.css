@@ -27,7 +27,7 @@ a:hover {
   margin: 0px;
   padding: 12px 20px;
   background: linear-gradient(180deg, #e68600 0%, #FF9500 100%);
-  font-size: 2vmin;
+  font-size: clamp(11px, 1.52vw, 21px);
   border-radius: 0;
 }
 
@@ -50,7 +50,7 @@ a:hover {
 .team-title {
   display: none;
   color: #FFFFFF;
-  font-size: 2.5vmin;
+  font-size: clamp(11px, 1.9vw, 25px);
   font-weight: normal;
 }
 
@@ -72,7 +72,7 @@ a:hover {
 
 .announcement {
   flex: 2;
-  font-size: 1.7vmin;
+  font-size: clamp(8px, 1.29vw, 17px);
   padding: 8px 12px;
   text-align: left;
   background-color: transparent;

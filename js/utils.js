@@ -35,7 +35,9 @@ function getYear(now) {
 
 function getTeam() {
   TriageConfig.lastTeamOrIndividual = $.url().param('team');
-  storeInStorage('lastTeamOrIndividual', TriageConfig.lastTeamOrIndividual);
+  if (SettingsLoaded) {
+    storeInStorage('lastTeamOrIndividual', TriageConfig.lastTeamOrIndividual);
+  }
   return TriageConfig.lastTeamOrIndividual;
 }
 
@@ -432,7 +434,7 @@ function getAPIKeyFromStorage() {
 }
 
 function AssertSettings() {
-  if (!SettingsLoaded) console.log("Assert: settings used before being loaded.")
+  if (!SettingsLoaded) console.trace("Assert: settings used before being loaded.");
 }
 
 function useLocalStore() {
@@ -462,7 +464,6 @@ function useLocalStore() {
 // Load TriageConfig with persisted data from session store, or
 // populate with default values.
 function loadSettingsInternal(jsonConfig) {
-  console.log('loading settings...');
   SettingsLoaded = true;
 
   TriageConfig.jsonConfig = jsonConfig;
