@@ -142,10 +142,29 @@ function silentBugRefresh() {
   }
   let snapshot = snapshotCounts();
   loadBugListDetail(function() {
+    refreshBucketStyles();
     if (NotificationsEnabled) {
       diffAndNotify(snapshot);
     }
   });
+}
+
+// Re-evaluate each bucket's future/current state and update .who/.date gray styling.
+// Called after silent refreshes so buckets that transition to "current" on Saturday
+// are un-grayed without requiring a full page reload.
+function refreshBucketStyles() {
+  if (!BugQueries) return;
+  let now = new Date();
+  for (let i = 0; i < BugQueries.length; i++) {
+    let query = BugQueries[i];
+    if (!("url" in query)) continue;
+    let dfrom = query.from.split('-');
+    let startDate = new Date(dfrom[0], parseInt(dfrom[1])-1, dfrom[2], 0, 0, 0, 0);
+    let isFuture = !(now > startDate);
+    let $bucket = $('.dev-bug-list').eq(i);
+    $bucket.find('.who').toggleClass('gray-text', isFuture);
+    $bucket.find('.date').toggleClass('gray-text', isFuture);
+  }
 }
 
 // Capture current per-slot counts before a silent refresh.
